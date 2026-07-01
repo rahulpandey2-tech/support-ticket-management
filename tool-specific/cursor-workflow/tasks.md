@@ -3,7 +3,7 @@
 > Track progress against [`IMPLEMENTATION_PLAN.md`](../../IMPLEMENTATION_PLAN.md).  
 > Update status as you complete each step: `done` · `in-progress` · `pending`
 
-**Last updated:** Step 1.2 complete
+**Last updated:** Step 1.3 complete
 
 ---
 
@@ -29,7 +29,7 @@
 |------|------|--------|
 | 1.1 | Root `README.md` skeleton | done |
 | 1.2 | Scaffold backend (Express + TypeScript) | done |
-| 1.3 | Scaffold frontend (React + Vite + TS) | pending |
+| 1.3 | Scaffold frontend (React + Vite + TS) | done |
 | 1.4 | Environment variables (`.env.example`) | pending |
 | 1.5 | Health check + CORS | pending |
 
@@ -180,7 +180,7 @@
 | Phase 1–10 | 0 | 58 |
 | Phase 11 (optional) | 0 | 10 |
 
-**Next step:** 1.3 — Scaffold frontend (React + Vite + TS)
+**Next step:** 1.4 — Configure environment variables
 
 ---
 
