@@ -3,8 +3,8 @@
 > Track progress against [`IMPLEMENTATION_PLAN.md`](../../IMPLEMENTATION_PLAN.md).  
 > Update status as you complete each step: `done` · `in-progress` · `pending`
 
-**Last updated:** Steps 2.6–2.7 complete — Phase 2 done
-**Next step:** 3.1 — Shared types and enums
+**Last updated:** Steps 3.3–3.4 complete — Phase 3 done
+**Next step:** 4.1 — GET /api/tickets
 
 ---
 
@@ -54,10 +54,10 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 3.1 | Shared types and enums | pending |
-| 3.2 | Error handling middleware | pending |
-| 3.3 | Validation layer (Zod) | pending |
-| 3.4 | API router structure | pending |
+| 3.1 | Shared types and enums | done |
+| 3.2 | Error handling middleware | done |
+| 3.3 | Validation layer (Zod) | done |
+| 3.4 | API router structure | done |
 
 ---
 
@@ -180,7 +180,8 @@
 | Phase 0 | 9 | 9 |
 | Phase 1 | 5 | 5 |
 | Phase 2 | 7 | 7 |
-| Phase 3–10 | 0 | 51 |
+| Phase 3 | 4 | 4 |
+| Phase 4–10 | 0 | 47 |
 | Phase 11 (optional) | 0 | 10 |
 
 ---

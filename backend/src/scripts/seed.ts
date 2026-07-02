@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { connectDatabase, disconnectDatabase, syncIndexes } from '../config/database';
 import { User, Ticket, Comment } from '../models';
-import type { TicketStatus } from '../models/Ticket';
+import type { TicketStatus } from '../types';
 
 dotenv.config();
 

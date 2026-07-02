@@ -1,12 +1,10 @@
+import { USER_ROLES, type Role } from '../types';
 import mongoose, { Document, Schema } from 'mongoose';
-
-export const USER_ROLES = ['admin', 'agent', 'user'] as const;
-export type UserRole = (typeof USER_ROLES)[number];
 
 export interface IUser extends Document {
   name: string;
   email: string;
-  role: UserRole;
+  role: Role;
   createdAt: Date;
   updatedAt: Date;
 }

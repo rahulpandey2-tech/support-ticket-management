@@ -1,21 +1,15 @@
+import {
+  TICKET_PRIORITIES,
+  TICKET_STATUSES,
+  type Priority,
+  type TicketStatus,
+} from '../types';
 import mongoose, { Document, Schema, Types } from 'mongoose';
-
-export const TICKET_PRIORITIES = ['low', 'medium', 'high'] as const;
-export type TicketPriority = (typeof TICKET_PRIORITIES)[number];
-
-export const TICKET_STATUSES = [
-  'open',
-  'in_progress',
-  'resolved',
-  'closed',
-  'cancelled',
-] as const;
-export type TicketStatus = (typeof TICKET_STATUSES)[number];
 
 export interface ITicket extends Document {
   title: string;
   description: string;
-  priority: TicketPriority;
+  priority: Priority;
   status: TicketStatus;
   assignedTo: Types.ObjectId | null;
   createdBy: Types.ObjectId;
