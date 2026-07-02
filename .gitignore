@@ -32,7 +32,3 @@ Thumbs.db
 
 # Test coverage
 coverage/
-
-# Prisma local DB (if under backend/prisma/)
-backend/prisma/*.db
-backend/prisma/*.db-journal

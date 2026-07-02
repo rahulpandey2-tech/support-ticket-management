@@ -43,7 +43,7 @@ Use this as your final gate before sharing the repo link.
 | 1 | Working frontend | `frontend/` |
 | 2 | Working backend API | `backend/` |
 | 3 | Database with persistence | DB + migrations |
-| 4 | Migration / schema scripts | `backend/migrations/` or `backend/prisma/` |
+| 4 | Schema / model scripts | `backend/src/models/` |
 | 5 | Seed / sample data | `backend/seed/` or seed script |
 | 6 | Input validation (backend) | Controllers / validators |
 | 7 | Error handling (backend + UI) | Middleware + UI error states |
@@ -92,8 +92,8 @@ Use this as your final gate before sharing the repo link.
 | Frontend | React + Vite + TypeScript | Fast dev, common in competency |
 | Styling | CSS Modules or Tailwind | Keep UI clean quickly |
 | Backend | Node.js + Express + TypeScript | Matches React ecosystem |
-| Database | PostgreSQL (or SQLite for simplicity) | Exercise accepts both |
-| ORM | Prisma or Knex | Migrations + seeding built-in |
+| Database | MongoDB | Exercise accepts MongoDB |
+| ODM | Mongoose | Schemas, models, and seeding |
 | Testing | Jest + Supertest | Integration tests for API |
 | HTTP client | fetch or axios | Frontend → backend |
 
@@ -127,7 +127,8 @@ C1_PROJECT/
 │   │   ├── validators/
 │   │   ├── middleware/
 │   │   └── index.ts
-│   ├── prisma/                # or migrations/
+│   │   ├── models/            # Mongoose models
+│   │   ├── config/            # database.ts
 │   ├── tests/
 │   ├── seed/
 │   └── package.json
@@ -244,33 +245,35 @@ C1_PROJECT/
 ## Phase 2 — Database Setup
 
 ### Step 2.1 — Choose and install database tooling
-- [ ] Pick PostgreSQL or SQLite
-- [ ] Install Prisma (or Knex): `npm install prisma @prisma/client`
-- [ ] Run `npx prisma init`
-- [ ] Commit: `chore: add Prisma and database config`
+- [ ] Pick **MongoDB**
+- [ ] Install Mongoose: `npm install mongoose`
+- [ ] Create `src/config/database.ts` for MongoDB connection
+- [ ] Add `MONGODB_URI` to `.env.example`
+- [ ] Commit: `chore: add Mongoose and MongoDB config`
 
-### Step 2.2 — Define User schema
-- [ ] Model: `id`, `name`, `email`, `role`
-- [ ] `role` enum or string: e.g. `admin`, `agent`, `user`
+### Step 2.2 — Define User model (Mongoose)
+- [ ] Model: `name`, `email`, `role`
+- [ ] `role` enum: `admin`, `agent`, `user`
 - [ ] Commit: `feat(db): add User model`
 
-### Step 2.3 — Define Ticket schema
-- [ ] Model: `id`, `title`, `description`, `priority`, `status`
-- [ ] Relations: `assignedTo` → User, `createdBy` → User
+### Step 2.3 — Define Ticket model (Mongoose)
+- [ ] Fields: `title`, `description`, `priority`, `status`
+- [ ] References: `assignedTo` → User, `createdBy` → User
 - [ ] Timestamps: `createdAt`, `updatedAt`
-- [ ] `priority` enum: `low`, `medium`, `high` (or similar)
+- [ ] `priority` enum: `low`, `medium`, `high`
 - [ ] `status` enum: `open`, `in_progress`, `resolved`, `closed`, `cancelled`
 - [ ] Commit: `feat(db): add Ticket model`
 
-### Step 2.4 — Define Comment schema
-- [ ] Model: `id`, `ticketId`, `message`, `createdBy`, `createdAt`
-- [ ] Relation: Comment → Ticket, Comment → User
+### Step 2.4 — Define Comment model (Mongoose)
+- [ ] Fields: `ticketId`, `message`, `createdBy`, `createdAt`
+- [ ] References: Comment → Ticket, Comment → User
 - [ ] Commit: `feat(db): add Comment model`
 
-### Step 2.5 — Run first migration
-- [ ] `npx prisma migrate dev --name init`
-- [ ] Verify tables exist in database
-- [ ] Commit migration files: `feat(db): initial migration`
+### Step 2.5 — Verify database connection and indexes
+- [ ] Start MongoDB locally (or use MongoDB Atlas)
+- [ ] Verify models register and connection succeeds
+- [ ] Add indexes if needed (e.g. unique email on User)
+- [ ] Commit: `feat(db): verify MongoDB connection and indexes`
 
 ### Step 2.6 — Create seed script
 - [ ] Seed at least 3–5 users (different roles)
@@ -281,7 +284,7 @@ C1_PROJECT/
 - [ ] Commit: `feat(db): add seed data`
 
 ### Step 2.7 — Verify persistence after restart
-- [ ] Stop app, restart DB and server, confirm data still there
+- [ ] Stop app, restart MongoDB and server, confirm data still there
 - [ ] Note result in `docs/testing-notes.md`
 - [ ] Commit: `test: verify data persistence after restart`
 
@@ -524,7 +527,7 @@ C1_PROJECT/
 
 ### Step 8.1 — Test infrastructure setup
 - [ ] Install Jest + Supertest in backend
-- [ ] Test DB strategy: SQLite in-memory or separate test database
+- [ ] Test DB strategy: MongoDB Memory Server or separate test database
 - [ ] Add `npm test` script
 - [ ] Commit: `chore: setup test infrastructure`
 

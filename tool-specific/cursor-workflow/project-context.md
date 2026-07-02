@@ -24,8 +24,8 @@
 | Frontend | React 18 + Vite + TypeScript | SPA with client-side routing |
 | Styling | CSS Modules (or Tailwind) | Keep UI simple and readable |
 | Backend | Node.js + Express + TypeScript | REST API |
-| Database | SQLite via Prisma | Easy local setup; file-based persistence |
-| ORM | Prisma | Migrations + seed scripts |
+| Database | MongoDB | Document database; local or Atlas |
+| ODM | Mongoose | Schemas, models, and seed scripts |
 | Validation | Zod | Request body validation on backend |
 | Testing | Jest + Supertest | Integration tests for API and state machine |
 | HTTP client | `fetch` | Frontend → backend calls |
@@ -35,7 +35,7 @@
 | Variable | Example | Purpose |
 |----------|---------|---------|
 | `PORT` | `3001` | API server port |
-| `DATABASE_URL` | `file:./dev.db` | Prisma SQLite connection |
+| `MONGODB_URI` | `mongodb://localhost:27017/support_tickets` | MongoDB connection string |
 | `CORS_ORIGIN` | `http://localhost:5173` | Frontend dev server origin |
 
 Secrets (e.g. future JWT secret) go in `.env` only — never commit.
@@ -67,9 +67,8 @@ C1_PROJECT/
 │   │   ├── validators/     # Zod schemas
 │   │   ├── middleware/       # errorHandler, etc.
 │   │   └── index.ts
-│   ├── prisma/
-│   │   ├── schema.prisma
-│   │   └── seed.ts
+│   │   ├── models/         # Mongoose models (User, Ticket, Comment)
+│   │   ├── config/         # database.ts — MongoDB connection
 │   ├── tests/              # Integration tests
 │   └── package.json
 ├── docs/
@@ -253,19 +252,20 @@ Core: no auth screens. `createdBy` defaults to a seeded user (e.g. first user in
 |------|------------|---------|
 | Files | camelCase for TS, PascalCase for React components | `statusMachine.ts`, `TicketListPage.tsx` |
 | Routes | kebab or plural nouns | `/api/tickets` |
-| DB tables | PascalCase (Prisma default) | `User`, `Ticket`, `Comment` |
+| DB collections | lowercase plural (Mongoose default) | `users`, `tickets`, `comments` |
 | Enums | snake_case values in API/DB | `in_progress`, `cancelled` |
 
 ### Backend layering
 
 ```
-Route → Controller → Service → Prisma
+Route → Controller → Service → Mongoose Model
 ```
 
 - **Routes:** wire HTTP methods only.
 - **Controllers:** parse request, call service, send response.
 - **Services:** business logic (especially state machine).
-- **Validators:** Zod schemas + middleware.
+- **Models:** Mongoose schemas in `src/models/`.
+- **Validators:** Zod schemas in `validators/`.
 
 ### Frontend
 
@@ -310,7 +310,7 @@ Route → Controller → Service → Prisma
 | Do not share | Use instead |
 |--------------|-------------|
 | Real `.env` values | Placeholders from `.env.example` |
-| Production DB URLs | `file:./dev.db` or example connection strings |
+| Production DB URLs | `mongodb://localhost:27017/support_tickets` |
 | Real colleague emails | `user@example.com` in seeds and prompts |
 | JWT secrets / API keys | `your-secret-here` placeholder |
 | Company-internal URLs or confidential data | Generic descriptions |

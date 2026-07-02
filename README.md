@@ -12,7 +12,7 @@ Built as part of the **JS AI Capability Exercise** using **Cursor** for AI-assis
 |-------|------------|
 | Frontend | React + Vite + TypeScript |
 | Backend | Node.js + Express + TypeScript |
-| Database | SQLite + Prisma |
+| Database | MongoDB + Mongoose |
 | Testing | Jest + Supertest |
 
 ---
@@ -30,7 +30,7 @@ Built as part of the **JS AI Capability Exercise** using **Cursor** for AI-assis
 ```
 C1_PROJECT/
 ├── frontend/          # React SPA
-├── backend/           # Express API + Prisma
+├── backend/           # Express API + Mongoose
 ├── docs/              # Lifecycle artifacts
 ├── prompts/           # AI prompt history
 └── tool-specific/     # Cursor workflow docs
@@ -79,7 +79,7 @@ Copy each `.env.example` to `.env` in the same folder before running locally.
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `PORT` | API server port | `3001` |
-| `DATABASE_URL` | Prisma SQLite connection string | `file:./dev.db` |
+| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/support_tickets` |
 | `CORS_ORIGIN` | Allowed frontend origin (used in Step 1.5) | `http://localhost:5173` |
 
 ```bash
@@ -114,6 +114,8 @@ npm run dev
 ```
 
 Runs at `http://localhost:3001` — health check at `GET /api/health`
+
+> **Requires MongoDB running locally** (or update `MONGODB_URI` in `.env` for Atlas).
 
 ### Frontend
 

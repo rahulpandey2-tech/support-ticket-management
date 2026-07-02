@@ -45,7 +45,7 @@
 - Filter list to one status: `open`, `in_progress`, `resolved`, `closed`, `cancelled`, or all.
 
 ### F9 — Data persistence
-- All data stored in SQLite via Prisma.
+- All data stored in MongoDB via Mongoose.
 - Survives application and process restart.
 
 ### F10 — Validation & errors
@@ -384,64 +384,40 @@ Implementation: `backend/src/services/statusMachine.ts`
 
 ---
 
-## 6. Database Schema (Prisma)
+## 6. Database Schema (Mongoose)
 
-```prisma
-enum Role {
-  admin
-  agent
-  user
+Models live in `backend/src/models/`. Steps 2.2–2.4 define full schemas.
+
+```typescript
+// User — collection: users
+{
+  name: string;          // required
+  email: string;         // required, unique
+  role: 'admin' | 'agent' | 'user';
+  timestamps: true;
 }
 
-enum Priority {
-  low
-  medium
-  high
+// Ticket — collection: tickets
+{
+  title: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high';
+  status: 'open' | 'in_progress' | 'resolved' | 'closed' | 'cancelled';  // default: open
+  assignedTo: ObjectId | null;   // ref: User
+  createdBy: ObjectId;           // ref: User
+  timestamps: true;              // createdAt, updatedAt
 }
 
-enum TicketStatus {
-  open
-  in_progress
-  resolved
-  closed
-  cancelled
-}
-
-model User {
-  id        Int       @id @default(autoincrement())
-  name      String
-  email     String    @unique
-  role      Role
-  ticketsCreated  Ticket[]  @relation("CreatedBy")
-  ticketsAssigned Ticket[]  @relation("AssignedTo")
-  comments  Comment[]
-}
-
-model Ticket {
-  id           Int          @id @default(autoincrement())
-  title        String
-  description  String
-  priority     Priority
-  status       TicketStatus @default(open)
-  assignedToId Int?
-  assignedTo   User?        @relation("AssignedTo", fields: [assignedToId], references: [id])
-  createdById  Int
-  createdBy    User         @relation("CreatedBy", fields: [createdById], references: [id])
-  comments     Comment[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
-}
-
-model Comment {
-  id          Int      @id @default(autoincrement())
-  message     String
-  ticketId    Int
-  ticket      Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-  createdById Int
-  createdBy   User     @relation(fields: [createdById], references: [id])
-  createdAt   DateTime @default(now())
+// Comment — collection: comments
+{
+  ticketId: ObjectId;    // ref: Ticket
+  message: string;
+  createdBy: ObjectId;   // ref: User
+  createdAt: Date;       // default: now
 }
 ```
+
+**Connection:** `MONGODB_URI` in `backend/.env` (see `.env.example`).
 
 ---
 

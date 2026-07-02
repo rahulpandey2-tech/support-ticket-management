@@ -3,7 +3,7 @@
 > Track progress against [`IMPLEMENTATION_PLAN.md`](../../IMPLEMENTATION_PLAN.md).  
 > Update status as you complete each step: `done` · `in-progress` · `pending`
 
-**Last updated:** Step 1.5 complete — Phase 1 done
+**Last updated:** Step 2.1 complete (MongoDB + Mongoose)
 
 ---
 
@@ -39,11 +39,11 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 2.1 | Install Prisma + SQLite config | pending |
-| 2.2 | Define User model | pending |
-| 2.3 | Define Ticket model | pending |
-| 2.4 | Define Comment model | pending |
-| 2.5 | Run initial migration | pending |
+| 2.1 | Install Mongoose + MongoDB config | done |
+| 2.2 | Define User model (Mongoose) | pending |
+| 2.3 | Define Ticket model (Mongoose) | pending |
+| 2.4 | Define Comment model (Mongoose) | pending |
+| 2.5 | Verify MongoDB connection and indexes | pending |
 | 2.6 | Create seed script | pending |
 | 2.7 | Verify persistence after restart | pending |
 
@@ -180,7 +180,7 @@
 | Phase 1 | 5 | 5 |
 | Phase 11 (optional) | 0 | 10 |
 
-**Next step:** 2.1 — Install Prisma + SQLite config (Phase 2)
+**Next step:** 2.2 — Define User model (Mongoose)
 
 ---
 

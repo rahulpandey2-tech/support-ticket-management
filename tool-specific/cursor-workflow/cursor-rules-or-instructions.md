@@ -13,13 +13,13 @@
 |-------|-----|
 | Frontend | React 18 + Vite + TypeScript |
 | Backend | Node.js + Express + TypeScript |
-| Database | SQLite + Prisma |
+| Database | MongoDB + Mongoose |
 | Validation | Zod (backend) |
 | Testing | Jest + Supertest |
 
 ### Architecture patterns
 
-- **Backend layering:** `Route → Controller → Service → Prisma`
+- **Backend layering:** `Route → Controller → Service → Mongoose Model`
 - **State machine:** Must live in `backend/src/services/statusMachine.ts` — never only in React
 - **Status updates:** Only via `PATCH /api/tickets/:id/status` — never through generic PATCH
 - **API calls:** Frontend HTTP logic only in `frontend/src/services/api.ts`
@@ -125,7 +125,7 @@ Do not: [scope limits]
 ```
 Step 4.5 — PATCH /api/tickets/:id/status
 
-Context: Express + Prisma + Zod. See spec.md and statusMachine.ts.
+Context: Express + Mongoose + Zod. See spec.md and statusMachine.ts.
 Task: Implement status change endpoint using statusMachine service.
 Constraints: Return 400 on invalid transition. Do not allow status in PATCH /tickets/:id.
 Do not: Implement frontend yet.
