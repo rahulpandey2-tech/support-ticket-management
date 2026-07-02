@@ -3,7 +3,8 @@
 > Track progress against [`IMPLEMENTATION_PLAN.md`](../../IMPLEMENTATION_PLAN.md).  
 > Update status as you complete each step: `done` · `in-progress` · `pending`
 
-**Last updated:** Step 2.1 complete (MongoDB + Mongoose)
+**Last updated:** Steps 2.6–2.7 complete — Phase 2 done
+**Next step:** 3.1 — Shared types and enums
 
 ---
 
@@ -40,12 +41,12 @@
 | Step | Task | Status |
 |------|------|--------|
 | 2.1 | Install Mongoose + MongoDB config | done |
-| 2.2 | Define User model (Mongoose) | pending |
-| 2.3 | Define Ticket model (Mongoose) | pending |
-| 2.4 | Define Comment model (Mongoose) | pending |
-| 2.5 | Verify MongoDB connection and indexes | pending |
-| 2.6 | Create seed script | pending |
-| 2.7 | Verify persistence after restart | pending |
+| 2.2 | Define User model (Mongoose) | done |
+| 2.3 | Define Ticket model (Mongoose) | done |
+| 2.4 | Define Comment model (Mongoose) | done |
+| 2.5 | Verify MongoDB connection and indexes | done |
+| 2.6 | Create seed script | done |
+| 2.7 | Verify persistence after restart | done |
 
 ---
 
@@ -178,9 +179,9 @@
 |-------|------|-------|
 | Phase 0 | 9 | 9 |
 | Phase 1 | 5 | 5 |
+| Phase 2 | 7 | 7 |
+| Phase 3–10 | 0 | 51 |
 | Phase 11 (optional) | 0 | 10 |
-
-**Next step:** 2.2 — Define User model (Mongoose)
 
 ---
 

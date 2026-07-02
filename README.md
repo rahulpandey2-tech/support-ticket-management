@@ -53,8 +53,10 @@ C1_PROJECT/
 ```bash
 cd backend
 npm install
-cp .env.example .env    # Windows: copy .env.example .env
-# Edit .env if needed (defaults work for local dev)
+copy .env.example .env
+# Edit MONGODB_URI for MongoDB Atlas or local MongoDB
+npm run verify:db
+npm run seed
 ```
 
 ### 3. Frontend setup
@@ -127,6 +129,30 @@ npm run dev
 ```
 
 Runs at `http://localhost:5173` — calls backend health check on load
+
+---
+
+## Database Seed
+
+After backend setup, populate sample data:
+
+```bash
+cd backend
+npm run seed
+```
+
+Seeds **5 users**, **10 tickets** (various statuses/priorities), and **8 comments**.
+
+Re-run `npm run seed` anytime to reset sample data (clears existing users, tickets, and comments).
+
+### Verify data persistence
+
+```bash
+cd backend
+npm run verify:persistence
+```
+
+Stop and restart the server (or Atlas cluster), then run `verify:persistence` again — counts should match.
 
 ---
 

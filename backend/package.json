@@ -7,7 +7,10 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "test": "echo \"Tests configured in Phase 8\" && exit 0"
+    "test": "echo \"Tests configured in Phase 8\" && exit 0",
+    "verify:db": "tsx src/scripts/verifyDb.ts",
+    "seed": "tsx src/scripts/seed.ts",
+    "verify:persistence": "tsx src/scripts/verifyPersistence.ts"
   },
   "keywords": [],
   "author": "",

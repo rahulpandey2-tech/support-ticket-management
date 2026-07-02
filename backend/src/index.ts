@@ -1,7 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { connectDatabase } from './config/database';
+import { connectDatabase, syncIndexes } from './config/database';
+import './models/User';
+import './models/Ticket';
+import './models/Comment';
 
 dotenv.config();
 
@@ -22,6 +25,7 @@ app.get('/', (_req, res) => {
 
 async function start() {
   await connectDatabase();
+  await syncIndexes();
 
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
