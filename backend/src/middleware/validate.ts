@@ -19,14 +19,8 @@ function validate(target: RequestTarget, schema: ZodType): RequestHandler {
       return next(badRequest('Validation failed', formatZodError(result.error)));
     }
 
-    if (target === 'body') {
-      req.body = result.data;
-    } else if (target === 'query') {
-      req.query = result.data as typeof req.query;
-    } else {
-      req.params = result.data as typeof req.params;
-    }
-
+    req.validated = req.validated ?? {};
+    req.validated[target] = result.data;
     next();
   };
 }

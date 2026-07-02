@@ -3,8 +3,8 @@
 > Track progress against [`IMPLEMENTATION_PLAN.md`](../../IMPLEMENTATION_PLAN.md).  
 > Update status as you complete each step: `done` · `in-progress` · `pending`
 
-**Last updated:** Steps 3.3–3.4 complete — Phase 3 done
-**Next step:** 4.1 — GET /api/tickets
+**Last updated:** Phase 4 complete (Steps 4.1–4.10)
+**Next step:** 5.1 — Status state machine (integration already in 4.5; verify/tests in Phase 5)
 
 ---
 
@@ -65,16 +65,16 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 4.1 | `GET /api/tickets` — list all | pending |
-| 4.2 | `GET /api/tickets/:id` — detail + comments | pending |
-| 4.3 | `POST /api/tickets` — create | pending |
-| 4.4 | `PATCH /api/tickets/:id` — update fields | pending |
-| 4.5 | `PATCH /api/tickets/:id/status` — change status | pending |
-| 4.6 | `POST /api/tickets/:id/comments` — add comment | pending |
-| 4.7 | Keyword search (`?q=`) | pending |
-| 4.8 | Filter by status (`?status=`) | pending |
-| 4.9 | Combined search + status filter | pending |
-| 4.10 | `GET /api/users` — list seeded users | pending |
+| 4.1 | `GET /api/tickets` — list all | done |
+| 4.2 | `GET /api/tickets/:id` — detail + comments | done |
+| 4.3 | `POST /api/tickets` — create | done |
+| 4.4 | `PATCH /api/tickets/:id` — update fields | done |
+| 4.5 | `PATCH /api/tickets/:id/status` — change status | done |
+| 4.6 | `POST /api/tickets/:id/comments` — add comment | done |
+| 4.7 | Keyword search (`?q=`) | done |
+| 4.8 | Filter by status (`?status=`) | done |
+| 4.9 | Combined search + status filter | done |
+| 4.10 | `GET /api/users` — list seeded users | done |
 
 ---
 
@@ -181,7 +181,8 @@
 | Phase 1 | 5 | 5 |
 | Phase 2 | 7 | 7 |
 | Phase 3 | 4 | 4 |
-| Phase 4–10 | 0 | 47 |
+| Phase 4 | 10 | 10 |
+| Phase 5–10 | 0 | 37 |
 | Phase 11 (optional) | 0 | 10 |
 
 ---

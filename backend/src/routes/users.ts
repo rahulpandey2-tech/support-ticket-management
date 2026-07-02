@@ -1,7 +1,9 @@
 import { Router } from 'express';
+import * as userController from '../controllers/userController';
+import { asyncHandler } from '../middleware/asyncHandler';
 
 const router = Router();
 
-// GET /api/users — implemented in Phase 4 (Step 4.10)
+router.get('/', asyncHandler(userController.listUsers));
 
 export default router;
