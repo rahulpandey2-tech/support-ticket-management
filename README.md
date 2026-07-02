@@ -51,46 +51,80 @@ C1_PROJECT/
 ### 2. Backend setup
 
 ```bash
-# TODO: install, env, migrate, seed
+cd backend
+npm install
+cp .env.example .env    # Windows: copy .env.example .env
+# Edit .env if needed (defaults work for local dev)
 ```
 
 ### 3. Frontend setup
 
 ```bash
-# TODO: install
+cd frontend
+npm install
+cp .env.example .env    # Windows: copy .env.example .env
 ```
 
 ---
 
 ## Environment Variables
 
-<!-- TODO: Step 1.4 — add .env.example and document variables -->
+Environment config lives in **separate `.env` files** for backend and frontend.  
+Copy each `.env.example` to `.env` in the same folder before running locally.
+
+**Never commit `.env` files** — only `.env.example` files are tracked in git.
+
+### Backend (`backend/.env`)
 
 | Variable | Description | Example |
 |----------|-------------|---------|
-| `PORT` | Backend server port | `3001` |
-| `DATABASE_URL` | Prisma SQLite connection | `file:./dev.db` |
-| `CORS_ORIGIN` | Frontend dev URL | `http://localhost:5173` |
+| `PORT` | API server port | `3001` |
+| `DATABASE_URL` | Prisma SQLite connection string | `file:./dev.db` |
+| `CORS_ORIGIN` | Allowed frontend origin (used in Step 1.5) | `http://localhost:5173` |
 
-Copy `backend/.env.example` to `backend/.env` and adjust values locally. **Never commit `.env`.**
+```bash
+cd backend
+copy .env.example .env
+```
+
+### Frontend (`frontend/.env`)
+
+| Variable | Description | Example |
+|----------|-------------|---------|
+| `VITE_API_URL` | Backend API base URL | `http://localhost:3001/api` |
+
+```bash
+cd frontend
+copy .env.example .env
+```
+
+> Vite only exposes variables prefixed with `VITE_` to the client.
 
 ---
 
 ## Running the Application
 
-<!-- TODO: Step 1.5+ — add run commands once backend and frontend exist -->
-
 ### Backend
 
 ```bash
-# TODO: cd backend && npm run dev
+cd backend
+copy .env.example .env
+npm install
+npm run dev
 ```
+
+Runs at `http://localhost:3001` — health check at `GET /api/health`
 
 ### Frontend
 
 ```bash
-# TODO: cd frontend && npm run dev
+cd frontend
+copy .env.example .env
+npm install
+npm run dev
 ```
+
+Runs at `http://localhost:5173` — calls backend health check on load
 
 ---
 
