@@ -24,15 +24,15 @@
 
 ## Documentation
 
-- [x] README complete
-- [x] tool-workflow.md (Part A)
-- [x] requirements-analysis.md
-- [x] acceptance-criteria.md (checked off)
-- [x] prompt-history.md + ai-prompts/
-- [x] debugging-notes.md
-- [x] reflection.md
-- [x] PR_DESCRIPTION.md
-- [x] design.md
+- [x] README complete + [SUBMISSION.md](../SUBMISSION.md) reviewer index
+- [x] tool-workflow.md (Part A) — root + `docs/tool-workflow.md`
+- [x] requirements-analysis.md — root + `docs/requirements-analysis.md`
+- [x] acceptance-criteria.md — root + `docs/acceptance-criteria.md` + `tool-specific/`
+- [x] prompt-history — `prompts/` + `docs/prompt-history.md` + `ai-prompts/`
+- [x] debugging-notes.md — root + `docs/debugging-notes.md`
+- [x] reflection.md — root + `docs/reflection.md`
+- [x] PR description — root (`pr-description.md`, `PR_DESCRIPTION.md`) + `docs/`
+- [x] design — root (`design-notes.md`, `design.md`) + `docs/design.md`
 - [x] candidate-info.md
 
 ## Submission

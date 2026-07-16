@@ -4,6 +4,8 @@ A full-stack internal application for creating, managing, searching, and progres
 
 Built as part of the **JS AI Capability Exercise** using **Cursor** for AI-assisted development.
 
+> **Reviewers / competency team:** All lifecycle artifacts are indexed in **[SUBMISSION.md](./SUBMISSION.md)** (root + `docs/` paths per `IMPLEMENTATION_PLAN.md`).
+
 ---
 
 ## Tech Stack
@@ -258,29 +260,27 @@ npm run lint
 
 ## Documentation
 
-| Document | Description |
-|----------|-------------|
-| [Repository Structure](./REPOSITORY_STRUCTURE.md) | Submission layout (exercise template) |
-| [Implementation Plan](./implementation-plan.md) | Step-by-step build guide |
-| [Requirements Analysis](./requirements-analysis.md) | Business requirements |
-| [API Contract](./api-contract.md) | REST endpoint reference |
-| [Data Model](./data-model.md) | Mongoose schemas |
-| [UI Flow](./ui-flow.md) | Pages and user flows |
-| [Testing Notes](./docs/testing-notes.md) | Manual and automated test results |
-| [Test Results](./test-results.md) | Latest test run summary |
-| [Test Strategy](./test-strategy.md) | What is and isn't tested |
-| [Debugging Notes](./debugging-notes.md) | Bugs hit and fixes |
-| [Code Review Notes](./code-review-notes.md) | Self-review findings |
-| [Design Notes](./design-notes.md) | Architecture and key decisions |
-| [Reflection](./reflection.md) | AI workflow reflection |
-| [PR Description](./pr-description.md) | Submission PR summary |
-| [Candidate Info](./candidate-info.md) | Submission metadata |
-| [Prompt History](./prompts/prompt-history.md) | AI prompt log |
-| [Tool Workflow](./tool-workflow.md) | AI workflow (Part A) |
-| [Project Context](./tool-specific/cursor-workflow/project-context.md) | Cursor persistent context |
-| [Spec](./tool-specific/cursor-workflow/spec.md) | Full API and UI specification |
-| [Tasks](./tool-specific/cursor-workflow/tasks.md) | Progress tracker |
-| [Database Setup](./database/setup-notes.md) | MongoDB setup and seed |
+**Full index:** [SUBMISSION.md](./SUBMISSION.md) — maps every artifact to root and `docs/` paths.
+
+| Document | Root | `docs/` (IMPLEMENTATION_PLAN) |
+|----------|------|--------------------------------|
+| Submission index | [SUBMISSION.md](./SUBMISSION.md) | — |
+| Repository layout | [REPOSITORY_STRUCTURE.md](./REPOSITORY_STRUCTURE.md) | — |
+| Tool workflow (Part A) | [tool-workflow.md](./tool-workflow.md) | [docs/tool-workflow.md](./docs/tool-workflow.md) |
+| Prompt history | [prompts/prompt-history.md](./prompts/prompt-history.md) | [docs/prompt-history.md](./docs/prompt-history.md) |
+| Requirements | [requirements-analysis.md](./requirements-analysis.md) | [docs/requirements-analysis.md](./docs/requirements-analysis.md) |
+| Acceptance criteria | [acceptance-criteria.md](./acceptance-criteria.md) | [docs/acceptance-criteria.md](./docs/acceptance-criteria.md) |
+| Design notes | [design-notes.md](./design-notes.md) | [docs/design.md](./docs/design.md) |
+| Debugging notes | [debugging-notes.md](./debugging-notes.md) | [docs/debugging-notes.md](./docs/debugging-notes.md) |
+| Code review | [code-review-notes.md](./code-review-notes.md) | [docs/code-review-notes.md](./docs/code-review-notes.md) |
+| Reflection | [reflection.md](./reflection.md) | [docs/reflection.md](./docs/reflection.md) |
+| PR description | [pr-description.md](./pr-description.md) | [docs/PR_DESCRIPTION.md](./docs/PR_DESCRIPTION.md) |
+| Candidate info | [candidate-info.md](./candidate-info.md) | — |
+| Implementation plan | [implementation-plan.md](./implementation-plan.md) | — |
+| API / data / UI | [api-contract.md](./api-contract.md), [data-model.md](./data-model.md), [ui-flow.md](./ui-flow.md) | — |
+| Testing | [test-strategy.md](./test-strategy.md), [test-results.md](./test-results.md) | [docs/testing-notes.md](./docs/testing-notes.md) |
+| Cursor workflow | [tool-specific/cursor-workflow/](./tool-specific/cursor-workflow/) | — |
+| Database setup | [database/setup-notes.md](./database/setup-notes.md) | — |
 
 ---
 
