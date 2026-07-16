@@ -49,7 +49,7 @@ This avoids re-explaining the project from scratch every session and keeps AI ou
 ## 4. AI for Planning and Design
 
 - `IMPLEMENTATION_PLAN.md` — full phased plan with small steps (separate API and UI steps)
-- `tool-specific/cursor-workflow/spec.md` — API contracts, request/response shapes, Prisma schema
+- `tool-specific/cursor-workflow/spec.md` — API contracts, request/response shapes, Mongoose schemas
 - `tool-specific/cursor-workflow/project-context.md` — architecture and coding standards
 - `tool-specific/cursor-workflow/tasks.md` — live progress tracker
 

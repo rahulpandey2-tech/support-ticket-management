@@ -1,26 +1,22 @@
-import { useEffect, useState } from 'react';
-import { fetchHealth } from './services/api';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { Layout } from './components/Layout';
+import { CreateTicketPage } from './pages/CreateTicketPage';
+import { TicketDetailPage } from './pages/TicketDetailPage';
+import { TicketListPage } from './pages/TicketListPage';
 import './App.css';
 
 function App() {
-  const [apiStatus, setApiStatus] = useState<'checking' | 'ok' | 'error'>('checking');
-
-  useEffect(() => {
-    fetchHealth()
-      .then((data) => setApiStatus(data.status === 'ok' ? 'ok' : 'error'))
-      .catch(() => setApiStatus('error'));
-  }, []);
-
   return (
-    <main className="app">
-      <h1>Support Ticket Management System</h1>
-      <p className="api-status" data-status={apiStatus}>
-        API status:{' '}
-        {apiStatus === 'checking' && 'Checking...'}
-        {apiStatus === 'ok' && 'Connected'}
-        {apiStatus === 'error' && 'Unable to reach backend'}
-      </p>
-    </main>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<Layout />}>
+          <Route index element={<TicketListPage />} />
+          <Route path="tickets/new" element={<CreateTicketPage />} />
+          <Route path="tickets/:id" element={<TicketDetailPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 

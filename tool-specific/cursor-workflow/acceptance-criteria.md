@@ -223,20 +223,20 @@
 
 ## Core checklist (summary)
 
-- [ ] AC-1  Create ticket via UI
-- [ ] AC-2  List tickets from database
-- [ ] AC-3  Ticket detail view
-- [ ] AC-4  Update fields and reassign
-- [ ] AC-5  Add comments
-- [ ] AC-6  Keyword search
-- [ ] AC-7  Filter by status
-- [ ] AC-8  Data persistence after restart
-- [ ] AC-9  Backend validation
-- [ ] AC-10 No secrets in repo
-- [ ] AC-11 Valid status transitions (tests)
-- [ ] AC-12 Invalid status transitions (tests)
-- [ ] AC-13 State machine UI behaviour
-- [ ] AC-14 Integration test suite passes
+- [x] AC-1  Create ticket via UI
+- [x] AC-2  List tickets from database
+- [x] AC-3  Ticket detail view
+- [x] AC-4  Update fields and reassign
+- [x] AC-5  Add comments
+- [x] AC-6  Keyword search
+- [x] AC-7  Filter by status
+- [x] AC-8  Data persistence after restart
+- [x] AC-9  Backend validation
+- [x] AC-10 No secrets in repo
+- [x] AC-11 Valid status transitions (tests)
+- [x] AC-12 Invalid status transitions (tests)
+- [x] AC-13 State machine UI behaviour
+- [x] AC-14 Integration test suite passes
 
 ---
 

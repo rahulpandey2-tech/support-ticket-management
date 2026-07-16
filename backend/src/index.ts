@@ -1,30 +1,10 @@
-import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDatabase, syncIndexes } from './config/database';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler';
-import apiRouter from './routes';
-import './models/User';
-import './models/Ticket';
-import './models/Comment';
+import { app } from './app';
 
 dotenv.config();
 
-const app = express();
 const PORT = process.env.PORT || 3001;
-const CORS_ORIGIN = process.env.CORS_ORIGIN || 'http://localhost:5173';
-
-app.use(cors({ origin: CORS_ORIGIN }));
-app.use(express.json());
-
-app.get('/', (_req, res) => {
-  res.json({ message: 'Support Ticket Management System API' });
-});
-
-app.use('/api', apiRouter);
-
-app.use(notFoundHandler);
-app.use(errorHandler);
 
 async function start() {
   await connectDatabase();
@@ -39,5 +19,3 @@ start().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
 });
-
-export default app;

@@ -4,6 +4,7 @@ import type { TicketStatus } from '../types';
 import {
   canTransition,
   getAllowedTransitions,
+  getInvalidTransitionMessage,
 } from './statusMachine';
 import { ensureUserExists } from './userService';
 import { toTicketResponse } from '../utils/mappers';
@@ -120,9 +121,7 @@ export async function updateTicketStatus(id: string, status: TicketStatus) {
   }
 
   if (!canTransition(ticket.status, status)) {
-    throw badRequest(
-      `Invalid status transition from ${ticket.status} to ${status}`
-    );
+    throw badRequest(getInvalidTransitionMessage(ticket.status, status));
   }
 
   ticket.status = status;

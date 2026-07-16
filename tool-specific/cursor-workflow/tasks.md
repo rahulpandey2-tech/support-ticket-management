@@ -3,8 +3,8 @@
 > Track progress against [`IMPLEMENTATION_PLAN.md`](../../IMPLEMENTATION_PLAN.md).  
 > Update status as you complete each step: `done` · `in-progress` · `pending`
 
-**Last updated:** Phase 4 complete (Steps 4.1–4.10)
-**Next step:** 5.1 — Status state machine (integration already in 4.5; verify/tests in Phase 5)
+**Last updated:** Phase 9 complete — ready for submission verification  
+**Next step:** 10.1 — Pre-submission verification
 
 ---
 
@@ -82,10 +82,10 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 5.1 | `statusMachine.ts` — transition map + helpers | pending |
-| 5.2 | Integrate state machine into status API | pending |
-| 5.3 | `GET /api/tickets/:id/allowed-transitions` | pending |
-| 5.4 | Manual API tests documented | pending |
+| 5.1 | `statusMachine.ts` — transition map + helpers | done |
+| 5.2 | Integrate state machine into status API | done |
+| 5.3 | `GET /api/tickets/:id/allowed-transitions` | done |
+| 5.4 | Manual API tests documented | done |
 
 ---
 
@@ -93,17 +93,17 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 6.1 | Router + API client + types | pending |
-| 6.2 | Layout and navigation | pending |
-| 6.3 | Ticket List page | pending |
-| 6.4 | Status filter on list | pending |
-| 6.5 | Keyword search on list | pending |
-| 6.6 | Create Ticket page | pending |
-| 6.7 | Ticket Detail view | pending |
-| 6.8 | Edit ticket fields | pending |
-| 6.9 | Status change UI | pending |
-| 6.10 | Comments section | pending |
-| 6.11 | Error and empty states | pending |
+| 6.1 | Router + API client + types | done |
+| 6.2 | Layout and navigation | done |
+| 6.3 | Ticket List page | done |
+| 6.4 | Status filter on list | done |
+| 6.5 | Keyword search on list | done |
+| 6.6 | Create Ticket page | done |
+| 6.7 | Ticket Detail view | done |
+| 6.8 | Edit ticket fields | done |
+| 6.9 | Status change UI | done |
+| 6.10 | Comments section | done |
+| 6.11 | Error and empty states | done |
 
 ---
 
@@ -111,10 +111,10 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 7.1 | End-to-end smoke test documented | pending |
-| 7.2 | README setup instructions complete | pending |
-| 7.3 | Code review pass + notes | pending |
-| 7.4 | Security check (no secrets) | pending |
+| 7.1 | End-to-end smoke test documented | done |
+| 7.2 | README setup instructions complete | done |
+| 7.3 | Code review pass + notes | done |
+| 7.4 | Security check (no secrets) | done |
 
 ---
 
@@ -122,12 +122,12 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 8.1 | Test infrastructure (Jest + Supertest) | pending |
-| 8.2 | Valid status transition integration tests | pending |
-| 8.3 | Invalid status transition integration tests | pending |
-| 8.4 | Create ticket validation tests | pending |
-| 8.5 | Search and filter integration tests | pending |
-| 8.6 | Run full suite + document results | pending |
+| 8.1 | Test infrastructure (Jest + Supertest) | done |
+| 8.2 | Valid status transition integration tests | done |
+| 8.3 | Invalid status transition integration tests | done |
+| 8.4 | Create ticket validation tests | done |
+| 8.5 | Search and filter integration tests | done |
+| 8.6 | Run full suite + document results | done |
 
 ---
 
@@ -135,13 +135,13 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 9.1 | Finalize `tool-workflow.md` | pending |
-| 9.2 | Sync cursor-workflow docs with implementation | pending |
-| 9.3 | Complete prompt history | pending |
-| 9.4 | `docs/debugging-notes.md` | pending |
-| 9.5 | `docs/reflection.md` | pending |
-| 9.6 | `docs/PR_DESCRIPTION.md` | pending |
-| 9.7 | `docs/design.md` | pending |
+| 9.1 | Finalize `tool-workflow.md` | done |
+| 9.2 | Sync cursor-workflow docs with implementation | done |
+| 9.3 | Complete prompt history | done |
+| 9.4 | `docs/debugging-notes.md` | done |
+| 9.5 | `docs/reflection.md` | done |
+| 9.6 | `docs/PR_DESCRIPTION.md` | done |
+| 9.7 | `docs/design.md` | done |
 
 ---
 
@@ -149,7 +149,7 @@
 
 | Step | Task | Status |
 |------|------|--------|
-| 10.1 | Pre-submission verification | pending |
+| 10.1 | Pre-submission verification | in-progress |
 | 10.2 | Push repository to GitHub | pending |
 | 10.3 | Fill submission form | pending |
 | 10.4 | Submit and keep repo available | pending |
@@ -182,7 +182,12 @@
 | Phase 2 | 7 | 7 |
 | Phase 3 | 4 | 4 |
 | Phase 4 | 10 | 10 |
-| Phase 5–10 | 0 | 37 |
+| Phase 5 | 4 | 4 |
+| Phase 6 | 11 | 11 |
+| Phase 7 | 4 | 4 |
+| Phase 8 | 6 | 6 |
+| Phase 9 | 7 | 7 |
+| Phase 10 | 0 | 4 |
 | Phase 11 (optional) | 0 | 10 |
 
 ---
