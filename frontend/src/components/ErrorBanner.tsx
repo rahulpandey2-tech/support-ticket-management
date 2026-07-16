@@ -6,11 +6,11 @@ interface ErrorBannerProps {
 
 export function ErrorBanner({ message, details, onDismiss }: ErrorBannerProps) {
   return (
-    <div className="error-banner" role="alert">
-      <div className="error-banner__content">
+    <div className="alert alert--error" role="alert">
+      <div>
         <strong>{message}</strong>
         {details && details.length > 0 && (
-          <ul className="error-banner__details">
+          <ul className="alert__details">
             {details.map((detail) => (
               <li key={`${detail.field}-${detail.message}`}>
                 {detail.field}: {detail.message}
@@ -20,7 +20,7 @@ export function ErrorBanner({ message, details, onDismiss }: ErrorBannerProps) {
         )}
       </div>
       {onDismiss && (
-        <button type="button" className="error-banner__dismiss" onClick={onDismiss}>
+        <button type="button" className="alert__dismiss" onClick={onDismiss}>
           Dismiss
         </button>
       )}

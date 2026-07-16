@@ -2,7 +2,9 @@ import { useCallback, useEffect, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { EmptyState } from '../components/EmptyState';
 import { ErrorBanner } from '../components/ErrorBanner';
+import { FormField } from '../components/FormField';
 import { LoadingSpinner } from '../components/LoadingSpinner';
+import { PriorityBadge } from '../components/PriorityBadge';
 import { StatusBadge } from '../components/StatusBadge';
 import {
   ApiError,
@@ -22,14 +24,21 @@ import type {
 } from '../types';
 import { TICKET_PRIORITIES } from '../types';
 import { formatDate, formatLabel } from '../utils/format';
+import {
+  hasErrors,
+  mergeApiFieldErrors,
+  validateCommentForm,
+  validateUpdateTicketForm,
+  type FieldErrors,
+} from '../validators/ticketValidators';
+
+const TITLE_MAX = 200;
 
 export function TicketDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [ticket, setTicket] = useState<TicketResponse | null>(null);
   const [users, setUsers] = useState<UserSummary[]>([]);
-  const [transitions, setTransitions] = useState<AllowedTransitionsResponse | null>(
-    null
-  );
+  const [transitions, setTransitions] = useState<AllowedTransitionsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,6 +56,11 @@ export function TicketDetailPage() {
 
   const [commentMessage, setCommentMessage] = useState('');
   const [commentAuthorId, setCommentAuthorId] = useState('');
+
+  const [editErrors, setEditErrors] = useState<FieldErrors>({});
+  const [commentErrors, setCommentErrors] = useState<FieldErrors>({});
+  const [editTouched, setEditTouched] = useState<Record<string, boolean>>({});
+  const [commentTouched, setCommentTouched] = useState<Record<string, boolean>>({});
 
   const loadTicket = useCallback(async () => {
     if (!id) return;
@@ -97,11 +111,18 @@ export function TicketDetailPage() {
     setDescription(current.description);
     setPriority(current.priority);
     setAssignedToId(current.assignedTo?.id ?? '');
+    setEditErrors({});
+    setEditTouched({});
   }
 
   async function handleSaveEdit(event: FormEvent) {
     event.preventDefault();
     if (!id) return;
+
+    setEditTouched({ title: true, description: true });
+    const clientErrors = validateUpdateTicketForm({ title, description, priority });
+    setEditErrors(clientErrors);
+    if (hasErrors(clientErrors)) return;
 
     setSaving(true);
     setError(null);
@@ -120,11 +141,12 @@ export function TicketDetailPage() {
       const transitionData = await getAllowedTransitions(id);
       setTransitions(transitionData);
     } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : 'Failed to update ticket. Please try again.'
-      );
+      if (err instanceof ApiError) {
+        setError(err.message);
+        setEditErrors(mergeApiFieldErrors(err.details));
+      } else {
+        setError('Failed to update ticket. Please try again.');
+      }
     } finally {
       setSaving(false);
     }
@@ -158,6 +180,14 @@ export function TicketDetailPage() {
     event.preventDefault();
     if (!id) return;
 
+    setCommentTouched({ message: true, createdById: true });
+    const clientErrors = validateCommentForm({
+      message: commentMessage,
+      createdById: commentAuthorId,
+    });
+    setCommentErrors(clientErrors);
+    if (hasErrors(clientErrors)) return;
+
     setCommentSubmitting(true);
     setError(null);
     setSuccess(null);
@@ -168,15 +198,18 @@ export function TicketDetailPage() {
         createdById: commentAuthorId,
       });
       setCommentMessage('');
+      setCommentTouched({});
+      setCommentErrors({});
       const refreshed = await getTicket(id);
       setTicket(refreshed);
       setSuccess('Comment added.');
     } catch (err) {
-      setError(
-        err instanceof ApiError
-          ? err.message
-          : 'Failed to add comment. Please try again.'
-      );
+      if (err instanceof ApiError) {
+        setError(err.message);
+        setCommentErrors(mergeApiFieldErrors(err.details));
+      } else {
+        setError('Failed to add comment. Please try again.');
+      }
     } finally {
       setCommentSubmitting(false);
     }
@@ -192,10 +225,13 @@ export function TicketDetailPage() {
         <EmptyState
           title="Ticket not found"
           message="The ticket may have been removed or the link is invalid."
+          icon="🔍"
         />
-        <Link to="/" className="button button--secondary">
-          Back to list
-        </Link>
+        <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+          <Link to="/" className="btn btn--secondary">
+            Back to list
+          </Link>
+        </div>
       </section>
     );
   }
@@ -205,218 +241,283 @@ export function TicketDetailPage() {
   }
 
   const comments = ticket.comments ?? [];
+  const showEditError = (field: string) =>
+    editTouched[field] ? editErrors[field] : undefined;
+  const showCommentError = (field: string) =>
+    commentTouched[field] ? commentErrors[field] : undefined;
 
   return (
     <section className="page">
-      <header className="page__header">
-        <div>
+      <header className="page-hero">
+        <div className="page-hero__content">
           <Link to="/" className="breadcrumb">
             ← Back to tickets
           </Link>
           <h1>{ticket.title}</h1>
           <div className="ticket-meta">
             <StatusBadge status={ticket.status} />
-            <span className={`priority priority--${ticket.priority}`}>
-              {formatLabel(ticket.priority)} priority
-            </span>
+            <PriorityBadge priority={ticket.priority} />
+            <span className="muted">#{ticket.id.slice(-8)}</span>
           </div>
         </div>
         {!editing && (
           <button
             type="button"
-            className="button button--secondary"
+            className="btn btn--secondary"
             onClick={() => setEditing(true)}
           >
-            Edit
+            Edit ticket
           </button>
         )}
       </header>
 
       {error && <ErrorBanner message={error} onDismiss={() => setError(null)} />}
       {success && (
-        <div className="success-banner" role="status">
-          {success}
-          <button type="button" onClick={() => setSuccess(null)}>
+        <div className="alert alert--success" role="status">
+          <span>{success}</span>
+          <button type="button" className="alert__dismiss" onClick={() => setSuccess(null)}>
             Dismiss
           </button>
         </div>
       )}
 
-      {editing ? (
-        <form className="form card" onSubmit={handleSaveEdit}>
-          <h2>Edit ticket</h2>
-          <label className="field">
-            <span className="field__label">Title</span>
-            <input
-              className="field__input"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-            />
-          </label>
-          <label className="field">
-            <span className="field__label">Description</span>
-            <textarea
-              className="field__input field__textarea"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              required
-              rows={5}
-            />
-          </label>
-          <label className="field">
-            <span className="field__label">Priority</span>
-            <select
-              className="field__input"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value as Priority)}
-            >
-              {TICKET_PRIORITIES.map((value) => (
-                <option key={value} value={value}>
-                  {formatLabel(value)}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className="field">
-            <span className="field__label">Assignee</span>
-            <select
-              className="field__input"
-              value={assignedToId}
-              onChange={(e) => setAssignedToId(e.target.value)}
-            >
-              <option value="">Unassigned</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="form__actions">
-            <button
-              type="button"
-              className="button button--secondary"
-              onClick={() => {
-                resetEditForm(ticket);
-                setEditing(false);
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="button button--primary"
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : 'Save changes'}
-            </button>
-          </div>
-        </form>
-      ) : (
-        <div className="card">
-          <h2>Details</h2>
-          <p className="ticket-description">{ticket.description}</p>
-          <dl className="detail-list">
-            <div>
-              <dt>Assignee</dt>
-              <dd>{ticket.assignedTo?.name ?? 'Unassigned'}</dd>
-            </div>
-            <div>
-              <dt>Created by</dt>
-              <dd>{ticket.createdBy.name}</dd>
-            </div>
-            <div>
-              <dt>Created</dt>
-              <dd>{formatDate(ticket.createdAt)}</dd>
-            </div>
-            <div>
-              <dt>Last updated</dt>
-              <dd>{formatDate(ticket.updatedAt)}</dd>
-            </div>
-          </dl>
-        </div>
-      )}
-
-      <div className="card">
-        <h2>Change status</h2>
-        {transitions && transitions.allowedTransitions.length > 0 ? (
-          <div className="status-actions">
-            {transitions.allowedTransitions.map((status) => (
-              <button
-                key={status}
-                type="button"
-                className="button button--secondary"
-                disabled={statusUpdating}
-                onClick={() => handleStatusChange(status)}
-              >
-                Move to {formatLabel(status)}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <p className="muted">No further status changes are available.</p>
-        )}
-      </div>
-
-      <div className="card">
-        <h2>Comments ({comments.length})</h2>
-
-        {comments.length === 0 ? (
-          <EmptyState title="No comments yet" message="Be the first to add a note." />
-        ) : (
-          <ul className="comment-list">
-            {comments.map((comment) => (
-              <li key={comment.id} className="comment">
-                <div className="comment__header">
-                  <strong>{comment.createdBy.name}</strong>
-                  <time dateTime={comment.createdAt}>
-                    {formatDate(comment.createdAt)}
-                  </time>
+      <div className="detail-grid">
+        <div className="detail-main">
+          {editing ? (
+            <form className="card" onSubmit={handleSaveEdit} noValidate>
+              <div className="card__header">
+                <div>
+                  <h2 className="card__title">Edit ticket</h2>
+                  <p className="card__subtitle">Status cannot be changed here — use workflow below.</p>
                 </div>
-                <p>{comment.message}</p>
-              </li>
-            ))}
-          </ul>
-        )}
+              </div>
+              <div className="form">
+                <FormField
+                  id="edit-title"
+                  label="Title"
+                  required
+                  error={showEditError('title')}
+                >
+                  <input
+                    id="edit-title"
+                    className="field__input"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    onBlur={() => {
+                      setEditTouched((p) => ({ ...p, title: true }));
+                      setEditErrors(validateUpdateTicketForm({ title, description, priority }));
+                    }}
+                    maxLength={TITLE_MAX}
+                  />
+                </FormField>
+                <FormField
+                  id="edit-description"
+                  label="Description"
+                  required
+                  error={showEditError('description')}
+                >
+                  <textarea
+                    id="edit-description"
+                    className="field__textarea"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    onBlur={() => {
+                      setEditTouched((p) => ({ ...p, description: true }));
+                      setEditErrors(validateUpdateTicketForm({ title, description, priority }));
+                    }}
+                    rows={5}
+                  />
+                </FormField>
+                <FormField id="edit-priority" label="Priority" required>
+                  <select
+                    id="edit-priority"
+                    className="field__select"
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value as Priority)}
+                  >
+                    {TICKET_PRIORITIES.map((value) => (
+                      <option key={value} value={value}>
+                        {formatLabel(value)}
+                      </option>
+                    ))}
+                  </select>
+                </FormField>
+                <FormField id="edit-assignee" label="Assignee">
+                  <select
+                    id="edit-assignee"
+                    className="field__select"
+                    value={assignedToId}
+                    onChange={(e) => setAssignedToId(e.target.value)}
+                  >
+                    <option value="">Unassigned</option>
+                    {users.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.name}
+                      </option>
+                    ))}
+                  </select>
+                </FormField>
+                <div className="form__actions">
+                  <button
+                    type="button"
+                    className="btn btn--ghost"
+                    onClick={() => {
+                      resetEditForm(ticket);
+                      setEditing(false);
+                    }}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn--primary" disabled={saving}>
+                    {saving ? 'Saving...' : 'Save changes'}
+                  </button>
+                </div>
+              </div>
+            </form>
+          ) : (
+            <div className="card">
+              <div className="card__header">
+                <h2 className="card__title">Description</h2>
+              </div>
+              <p className="ticket-description">{ticket.description}</p>
+            </div>
+          )}
 
-        <form className="form comment-form" onSubmit={handleAddComment}>
-          <label className="field">
-            <span className="field__label">Add comment</span>
-            <textarea
-              className="field__input field__textarea"
-              value={commentMessage}
-              onChange={(e) => setCommentMessage(e.target.value)}
-              required
-              rows={3}
-              placeholder="Write an update or note..."
-            />
-          </label>
-          <label className="field">
-            <span className="field__label">Author</span>
-            <select
-              className="field__input"
-              value={commentAuthorId}
-              onChange={(e) => setCommentAuthorId(e.target.value)}
-              required
-            >
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <div className="form__actions">
-            <button
-              type="submit"
-              className="button button--primary"
-              disabled={commentSubmitting}
-            >
-              {commentSubmitting ? 'Posting...' : 'Post comment'}
-            </button>
+          <div className="card">
+            <div className="card__header">
+              <div>
+                <h2 className="card__title">Comments</h2>
+                <p className="card__subtitle">{comments.length} total</p>
+              </div>
+            </div>
+
+            {comments.length === 0 ? (
+              <EmptyState
+                title="No comments yet"
+                message="Add an update or note for the team."
+                icon="💬"
+              />
+            ) : (
+              <ul className="comment-list">
+                {comments.map((comment) => (
+                  <li key={comment.id} className="comment">
+                    <div className="comment__header">
+                      <span className="comment__author">{comment.createdBy.name}</span>
+                      <time className="comment__time" dateTime={comment.createdAt}>
+                        {formatDate(comment.createdAt)}
+                      </time>
+                    </div>
+                    <p className="comment__body">{comment.message}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <form className="form comment-form" onSubmit={handleAddComment} noValidate>
+              <FormField
+                id="comment-message"
+                label="Add comment"
+                required
+                error={showCommentError('message')}
+              >
+                <textarea
+                  id="comment-message"
+                  className="field__textarea"
+                  value={commentMessage}
+                  onChange={(e) => setCommentMessage(e.target.value)}
+                  onBlur={() => {
+                    setCommentTouched((p) => ({ ...p, message: true }));
+                    setCommentErrors(
+                      validateCommentForm({ message: commentMessage, createdById: commentAuthorId })
+                    );
+                  }}
+                  rows={3}
+                  placeholder="Write an update or note..."
+                />
+              </FormField>
+              <FormField
+                id="comment-author"
+                label="Author"
+                required
+                error={showCommentError('createdById')}
+              >
+                <select
+                  id="comment-author"
+                  className="field__select"
+                  value={commentAuthorId}
+                  onChange={(e) => setCommentAuthorId(e.target.value)}
+                >
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.name}
+                    </option>
+                  ))}
+                </select>
+              </FormField>
+              <div className="form__actions">
+                <button
+                  type="submit"
+                  className="btn btn--primary"
+                  disabled={commentSubmitting}
+                >
+                  {commentSubmitting ? 'Posting...' : 'Post comment'}
+                </button>
+              </div>
+            </form>
           </div>
-        </form>
+        </div>
+
+        <aside className="detail-sidebar">
+          <div className="meta-card">
+            <h2 className="card__title" style={{ marginBottom: '1rem' }}>
+              Details
+            </h2>
+            <dl className="meta-list">
+              <div>
+                <dt>Assignee</dt>
+                <dd>{ticket.assignedTo?.name ?? 'Unassigned'}</dd>
+              </div>
+              <div>
+                <dt>Created by</dt>
+                <dd>{ticket.createdBy.name}</dd>
+              </div>
+              <div>
+                <dt>Created</dt>
+                <dd>{formatDate(ticket.createdAt)}</dd>
+              </div>
+              <div>
+                <dt>Last updated</dt>
+                <dd>{formatDate(ticket.updatedAt)}</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div className="meta-card">
+            <h2 className="card__title" style={{ marginBottom: '0.35rem' }}>
+              Workflow
+            </h2>
+            <p className="card__subtitle" style={{ marginBottom: '1rem' }}>
+              Current: {formatLabel(ticket.status)}
+            </p>
+            {transitions && transitions.allowedTransitions.length > 0 ? (
+              <div className="status-actions">
+                {transitions.allowedTransitions.map((status) => (
+                  <button
+                    key={status}
+                    type="button"
+                    className="btn btn--status"
+                    disabled={statusUpdating}
+                    onClick={() => handleStatusChange(status)}
+                  >
+                    → {formatLabel(status)}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="muted">No further status changes available.</p>
+            )}
+          </div>
+        </aside>
       </div>
     </section>
   );

@@ -1,677 +1,612 @@
 # Prompt History
 
-> Chronological log of AI prompts used while building the Support Ticket Management System.  
-> This reflects how the project was actually built — many small sessions, not a few bulk prompts.
+> How I used Cursor to build the Support Ticket Management System — requirements clarified **step by step**, not by pasting the whole exercise document.
 
 ---
 
-## How to read this log
+## Session style
 
-Each entry is one Cursor session or one focused ask.  
-**Accepted** = used as-is or with minor edits · **Changed** = I modified AI output · **Rejected** = did not use
-
----
-
-## 2026-07-01 (morning) — Understanding the exercise
-
-**Prompt:**
-> I need to do the JS AI Capability Exercise. Here's the participant guide [pasted]. Before writing any code, help me understand what's mandatory in Core vs what's Stretch. Especially the state machine rules — list all 5 valid transitions.
-
-**Outcome:** Clarified Core scope; confirmed auth is optional.
-
-**Changed:** Wrote my own summary in requirements doc later — didn't copy AI wording.
+Each session I told Cursor **one slice** of what I needed: an entity, one endpoint, one UI screen, or one bug. I kept `project-context.md` and `spec.md` in the repo so I did not re-paste the full brief every time.
 
 ---
 
-**Prompt:**
-> Create IMPLEMENTATION_PLAN.md only — break the Support Ticket project into small steps. Separate each API endpoint and each UI page into its own step. Include phases for testing and docs. No code generation yet.
+## Day 1 — Scope and entities
 
-**Outcome:** First draft of `IMPLEMENTATION_PLAN.md`.
+**Me:**
+> Initialize git for this project — .gitignore for node_modules, .env, dist. I'll commit step by step.
 
-**Changed:** Removed a suggested "Day 1–7" schedule — I'm self-paced.
+**Outcome:** `.gitignore` created.
 
----
-
-## 2026-07-01 — Phase 0 planning
-
-**Prompt:**
-> git init isn't working, terminal says git not recognized on Windows. what should I install?
-
-**Outcome:** Installed Git for Windows manually.
-
-**Rejected:** AI suggested WSL — stayed on native Windows.
+**Debug:** Terminal said `git` not recognized on Windows. Installed Git for Windows manually, reopened terminal, then `git init` and remote `rahulpandey2-tech/support-ticket-management` worked.
 
 ---
 
-**Prompt:**
-> Step 0.2 — draft requirements-analysis.md for Support Ticket system. Users are seeded only, no user CRUD UI. Include edge cases for invalid status changes.
+**Me:**
+> I'm building a small internal support ticket app. Three entities: User, Ticket, Comment. Users are seeded in the database only — no signup screen. Help me list the fields each entity needs.
 
-**Outcome:** `docs/requirements-analysis.md` first draft.
+**Cursor:** Drafted User (name, email, role), Ticket (title, description, priority, status, assignee, creator, timestamps), Comment (ticketId, message, author, createdAt).
 
-**Changed:** Removed "reopen closed ticket" — not in exercise brief.
-
----
-
-**Prompt:**
-> For project-context.md use React, Vite, Express, TypeScript. I'm thinking SQLite + Prisma so reviewers can run without installing Mongo. Agree or push back?
-
-**Outcome:** `project-context.md` with Prisma/SQLite initially.
-
-**Changed:** Later switched to MongoDB — see 2026-07-01 afternoon.
+**I changed:** Used ObjectId/MongoDB later instead of integer ids.
 
 ---
 
-**Prompt:**
-> Write spec.md for the ticket API. I want search and status filter on the same GET /api/tickets with query params ?q= and ?status=, not separate endpoints.
+**Me:**
+> New tickets always start as `open`. Priority is low, medium, or high. Status values are open, in_progress, resolved, closed, cancelled. Write this into requirements-analysis.md.
 
-**Outcome:** API spec with unified list endpoint.
-
-**Accepted:** Query param design.
+**Outcome:** Entity section in requirements doc.
 
 ---
 
-**Prompt:**
-> acceptance-criteria.md — use Given/When/Then format for every Core feature. Include separate ACs for state machine backend tests and UI behaviour.
+**Me:**
+> Important rule: changing status is NOT the same as editing title. Status must use a separate API and follow a state machine. I'll give you the allowed moves next.
+
+**Outcome:** Documented in requirements + spec.
+
+---
+
+**Me:**
+> State machine rules:
+> - open → in_progress OR cancelled
+> - in_progress → resolved OR cancelled
+> - resolved → closed only
+> - closed and cancelled are terminal
+> Invalid transitions must return 400 from backend. Confirm you understand before we code.
+
+**Cursor:** Confirmed 5 valid transitions.
+
+**I rejected:** Suggestion to add "reopen" from closed — not in my requirements.
+
+---
+
+**Me:**
+> Core features I need: create ticket, list tickets, view detail, edit title/description/priority/assignee, change status via machine, add comments, search by keyword, filter by status. No login for Core. Out of scope: user CRUD UI, pagination, auth.
+
+**Outcome:** Feature list in requirements-analysis.md.
+
+---
+
+**Me:**
+> Help me write acceptance criteria in Given/When/Then for each feature above. Separate criteria for backend state machine tests and for UI only showing valid status buttons.
 
 **Outcome:** `acceptance-criteria.md`.
 
 ---
 
-**Prompt:**
-> cursor-rules-or-instructions.md — rules for AI: one step per commit, no secrets in prompts, backend must enforce status machine, validate with Zod.
+**Me:**
+> Stack: React + Vite + TypeScript frontend, Express + TypeScript backend, MongoDB with Mongoose. Create project-context.md with folder layout and API error format `{ error, details? }`.
+
+**Outcome:** `project-context.md`.
+
+---
+
+**Me:**
+> Write a phased implementation plan — small steps, one API or one page per step. Save as IMPLEMENTATION_PLAN.md. I'll follow it one commit at a time.
+
+**Outcome:** Implementation plan (also copied to `implementation-plan.md` for submission).
+
+---
+
+**Me:**
+> tool-workflow.md — document how I use Cursor for all 11 Part A sections (context, planning, validation, what not to share with AI).
+
+**Outcome:** Part A submission doc.
+
+---
+
+**Me:**
+> cursor-rules-or-instructions.md — rules for AI: one step per commit, backend enforces state machine, never commit secrets, update tasks.md after each step.
 
 **Outcome:** Cursor rules file.
 
 ---
 
-**Prompt:**
-> tool-workflow.md needs all 11 sections from Part A of the exercise. Primary tool is Cursor. Draft it based on how I plan to work.
+## Day 1 — Project setup
 
-**Outcome:** Part A submission doc.
+**Me:**
+> Scaffold backend: express, typescript, tsx dev script. One route GET /api/health returns { status: "ok" }.
 
-**Changed:** Will update after I actually debug and test — not final until end.
-
----
-
-## 2026-07-01 (afternoon) — Scaffolding
-
-**Prompt:**
-> Scaffold backend folder: express 5, typescript, tsx for dev. Single health route GET /api/health returns { status: "ok" }. package.json scripts for dev and build.
-
-**Outcome:** `backend/` skeleton.
+**Outcome:** Backend skeleton.
 
 ---
 
-**Prompt:**
-> Add cors middleware — only allow http://localhost:5173. Read from CORS_ORIGIN env var.
+**Me:**
+> Scaffold frontend with Vite react-ts. Fetch health endpoint on load, show connected or error. API URL from VITE_API_URL env var.
 
-**Outcome:** CORS wired in `index.ts`.
-
----
-
-**Prompt:**
-> Scaffold frontend with Vite react-ts template. Add a simple App that calls /api/health and shows connected / error. Put API base URL in VITE_API_URL.
-
-**Outcome:** `frontend/` with health check display.
+**Outcome:** Frontend skeleton.
 
 ---
 
-**Prompt:**
-> backend/.env.example — PORT 3001, placeholder MONGODB_URI, CORS_ORIGIN. frontend/.env.example with VITE_API_URL. Make sure .gitignore blocks .env.
+**Me:**
+> Add CORS so only http://localhost:5173 can call the API. cors package, CORS_ORIGIN in .env.
 
-**Outcome:** Env examples + gitignore.
-
----
-
-## 2026-07-01 (evening) — Database decision & models
-
-**Prompt:**
-> Actually I want MongoDB Atlas instead of SQLite — easier for me to demo persistence without shipping a db file. Remove any Prisma stuff if present. Set up Mongoose connection in config/database.ts.
-
-**Outcome:** Switched stack to Mongoose.
-
-**Changed:** Updated project-context.md myself to say MongoDB not Prisma.
+**Outcome:** CORS configured.
 
 ---
 
-**Prompt:**
-> Mongoose User model: name, email unique, role enum admin|agent|user. Match types in backend/src/types.
+**Me:**
+> .env.example for backend and frontend. Never put real credentials in example files — placeholders only.
 
-**Outcome:** `models/User.ts`.
-
----
-
-**Prompt:**
-> Ticket model — title max 200, description required, priority low|medium|high, status with default open, assignedTo ref User optional, createdBy ref User required. Add index on status and updatedAt.
-
-**Outcome:** `models/Ticket.ts`.
+**Outcome:** Env templates + root `.gitignore`.
 
 ---
 
-**Prompt:**
-> Comment model — ticketId ref Ticket, message required, createdBy ref User. Index ticketId + createdAt for listing comments on a ticket.
+## Day 1 — Database
 
-**Outcome:** `models/Comment.ts`.
+**Me:**
+> I started with SQLite/Prisma in early docs but switching to MongoDB + Mongoose now. Remove Prisma if any files exist. Add config/database.ts with connect, disconnect, syncIndexes.
+
+**Outcome:** MongoDB connection layer.
+
+---
+> Mongoose User schema — email unique, role enum admin agent user. Ticket schema with refs to User for assignedTo and createdBy. Comment schema with ticketId ref.
+
+**Outcome:** Three models.
 
 ---
 
-**Prompt:**
-> seed.ts — wipe users tickets comments then insert 5 users (@example.com only), 10 tickets covering all 5 statuses, 8 comments. npm run seed script.
+**Me:**
+> Ticket needs text index on title and description for search later. Also index status and updatedAt for list sorting.
 
-**Outcome:** Seed script.
+**Outcome:** Indexes on Ticket model.
 
 ---
 
-**Prompt:**
-> npm run verify:db — script that connects, syncIndexes, prints collection index info. I need to confirm Atlas works before continuing.
+**Me:**
+> Seed script: 5 users with @example.com emails, 10 tickets with mixed statuses, 8 comments. npm run seed should clear collections first.
+
+**Outcome:** `seed.ts`.
+
+---
+
+**Me:**
+> Script npm run verify:db — connect, syncIndexes, print status.
 
 **Outcome:** `verifyDb.ts`.
 
 ---
 
-## 2026-07-01 (night) — Atlas debugging
+### Debug — Atlas connection
 
-**Prompt:**
-> verify:db fails:
-> ```
-> querySrv ECONNREFUSED _mongodb._tcp.cluster0.sewzrz9.mongodb.net
-> ```
-> Using mongodb+srv URI on Windows 11. Network is fine. Ideas?
+**Me:**
+> verify:db error: querySrv ECONNREFUSED for mongodb+srv URI. Windows 11. I didn't paste my password — what should I check?
 
-**Outcome:** AI suggested non-SRV connection string from Atlas "Drivers" panel.
+**Cursor:** Try standard mongodb:// URI, IP whitelist, URL-encode password in .env locally.
 
-**Changed:** Did NOT paste my real password in the chat — only error text.
+**Fix:** Used Direct Connection string from Atlas UI.
 
 ---
 
-**Prompt:**
-> OK connected now but mongoose.connection.name is "test" not support_tickets. URI looks like ...mongodb.net/?retryWrites=true — what's missing?
+**Me:**
+> Connected but database name is "test". My URI ends with .net/?retryWrites — where do I put the database name?
 
-**Outcome:** Need `/support_tickets` in path before query string.
-
-**Accepted:** Fixed .env locally.
+**Fix:** `/support_tickets` before the `?`.
 
 ---
 
-**Prompt:**
-> seed runs but verify:persistence shows 0 tickets after I restarted only the node server. Is that expected with Atlas?
+**Me:**
+> npm run verify:persistence — script to print user/ticket/comment counts so I can confirm data survives after stopping the node server.
 
-**Outcome:** Clarified Atlas keeps data; I had run seed on wrong database before URI fix.
+**Outcome:** `verifyPersistence.ts`.
 
----
-
-## 2026-07-02 — Backend foundation
-
-**Prompt:**
-> AppError class with statusCode and optional details array. badRequest(), notFound() helpers. Central errorHandler middleware returning { error, details? }.
-
-**Outcome:** Error handling layer.
+**Note:** Counts were wrong until database name in URI was fixed (see above).
 
 ---
 
-**Prompt:**
-> Zod validate middleware — validateBody, validateQuery, validateParams. On failure return 400 Validation failed with field messages.
+## Day 2 — Backend foundation
 
-**Outcome:** First version of `validate.ts`.
+**Me:**
+> AppError class with statusCode. badRequest() and notFound() helpers. errorHandler middleware returns JSON { error, details? }.
 
-**Changed:** Broke later on Express 5 — see below.
-
----
-
-**Prompt:**
-> express.d.ts — extend Request with validated?: { body?, query?, params? }. Controllers will read from there.
-
-**Outcome:** Type augmentation (added after Express 5 fix).
+**Outcome:** Error layer.
 
 ---
 
-**Prompt:**
-> Split routes: tickets.ts, comments.ts nested under tickets, users.ts. Mount at /api in routes/index.ts. Health stays on api router too.
+**Me:**
+> Zod middleware: validateBody, validateQuery, validateParams. Store parsed values on req.validated — do not overwrite req.query (I heard Express 5 makes it read-only).
 
-**Outcome:** Route structure.
+**Outcome:** validate.ts (this prevented a later bug).
 
 ---
 
-## 2026-07-02 — Ticket APIs (one at a time)
+**Me:**
+> Route files: tickets.ts, users.ts, comments nested under tickets. Mount at /api.
 
-**Prompt:**
-> Step 4.1 — GET /api/tickets. Service layer ticketService.listTickets(). Populate assignedTo and createdBy with name email role. Sort updatedAt desc. Response DTO without comments for list.
+**Outcome:** Router structure.
+
+---
+
+**Me:**
+> asyncHandler wrapper for controllers so async errors reach errorHandler. toTicketResponse mapper — convert mongoose doc to API JSON with populated user summaries.
+
+**Outcome:** `asyncHandler.ts`, `mappers.ts`.
+
+---
+
+## Day 2 — APIs (one endpoint per session)
+
+**Me:**
+> GET /api/tickets — return all tickets, populate assignee and creator name/email/role, sort by updatedAt descending. Service + controller pattern.
 
 **Outcome:** List endpoint.
 
 ---
 
-**Prompt:**
-> list tickets crashes when I add ?status=open:
-> ```
-> TypeError: Cannot set property query of #<IncomingMessage> which has only a getter
-> validate.ts:25
-> ```
-> Express 5.2.1. Don't assign to req.query — store parsed result elsewhere.
+**Me:**
+> GET /api/tickets/:id — include comments array, newest first. 404 if missing.
 
-**Outcome:** `req.validated.query` pattern.
-
-**Changed:** Updated ticketController AND commentController AND all validators consumers — AI only fixed one file first, I asked to fix all.
+**Outcome:** Detail endpoint.
 
 ---
 
-**Prompt:**
-> Step 4.2 — GET /api/tickets/:id include comments array, newest comment first. 404 if not found.
-
-**Outcome:** Detail endpoint with comments.
-
----
-
-**Prompt:**
-> Step 4.3 — POST /api/tickets. Body: title, description, priority, assignedToId optional, createdById required. Always create with status open. Return 201.
+**Me:**
+> POST /api/tickets — body title, description, priority, createdById required, assignedToId optional. Always create with status open. 201 response.
 
 **Outcome:** Create endpoint.
 
 ---
 
-**Prompt:**
-> create ticket returns 400 createdById invalid — my Zod objectIdSchema — what regex/format for MongoDB ObjectId string?
+**Me:**
+> POST /api/tickets returns 400 on createdById — strengthen objectIdSchema in Zod to validate 24-char hex MongoDB id format.
 
-**Outcome:** Adjusted `common.ts` objectId validator.
-
----
-
-**Prompt:**
-> Step 4.4 — PATCH /api/tickets/:id for title description priority assignedToId only. Must NOT accept status in body. At least one field required.
-
-**Outcome:** Update endpoint without status.
-
-**Rejected:** AI initially included status in update schema — removed it manually.
+**Fix:** `validators/common.ts` ObjectId pattern.
 
 ---
 
-**Prompt:**
-> Step 4.6 — POST /api/tickets/:ticketId/comments. Validate ticket exists first. Return 201 with comment DTO.
+**Me:**
+> PATCH /api/tickets/:id — only title, description, priority, assignedToId. If someone sends status in body, Zod schema must not include it.
 
-**Outcome:** Comments route.
+**Outcome:** Update endpoint.
 
----
-
-**Prompt:**
-> Step 4.7 — add ?q= text search on list tickets. MongoDB text index on title and description. Case insensitive behaviour?
-
-**Outcome:** `$text` search in list filter.
-
-**Changed:** Confirmed text index exists on Ticket schema from earlier step.
+**I verified:** status not in updateTicketSchema.
 
 ---
 
-**Prompt:**
-> Step 4.8 — ?status= filter enum. Combine with ?q= when both present (AND logic).
+**Me:**
+> statusMachine.ts — canTransition(from,to) for the 5 edges we defined. getAllowedTransitions(from). getInvalidTransitionMessage for 400 responses.
 
-**Outcome:** Combined filter in `buildListFilter`.
-
----
-
-**Prompt:**
-> GET /api/users — return id name email role for dropdowns. No pagination needed for Core.
-
-**Outcome:** Users list endpoint.
+**Outcome:** State machine module.
 
 ---
 
-## 2026-07-02 — State machine
+**Me:**
+> PATCH /api/tickets/:id/status — use canTransition, 400 with "Cannot transition from X to Y" if invalid.
 
-**Prompt:**
-> statusMachine.ts — canTransition(from,to) and getAllowedTransitions(from). Only these 5 edges: open→in_progress, open→cancelled, in_progress→resolved, in_progress→cancelled, resolved→closed.
-
-**Outcome:** Transition map.
+**Outcome:** Status endpoint.
 
 ---
 
-**Prompt:**
-> PATCH /api/tickets/:id/status — call canTransition before save. 400 with message exactly "Cannot transition from {from} to {to}".
-
-**Outcome:** Status update endpoint.
-
----
-
-**Prompt:**
-> GET /api/tickets/:id/allowed-transitions — return { currentStatus, allowedTransitions: [] } for frontend buttons.
+**Me:**
+> GET /api/tickets/:id/allowed-transitions — return currentStatus and allowedTransitions array for UI buttons.
 
 **Outcome:** Helper endpoint.
 
 ---
 
-**Prompt:**
-> Quick check — if I PATCH /api/tickets/:id with { "status": "closed" } should it work? It must NOT. Confirm updateTicketSchema excludes status.
+**Me:**
+> POST /api/tickets/:ticketId/comments — message and createdById required, ticket must exist.
 
-**Outcome:** Verified safe — only status route changes status.
-
----
-
-## 2026-07-02 — Manual API testing (state machine)
-
-**Prompt:**
-> Write a small node script testStateMachine.ts that hits localhost:3001 — test all valid transitions on a seeded open ticket, then test open→closed returns 400. I'll run it while dev server is up.
-
-**Outcome:** Manual test runner.
+**Outcome:** Comments endpoint.
 
 ---
 
-**Prompt:**
-> test script says no open tickets — should I re-run seed each time before manual tests?
+**Me:**
+> Add ?q= to list tickets using MongoDB text search. Add ?status= filter. Both query params work together.
 
-**Outcome:** Yes — seed resets data; documented in testing-notes.
-
----
-
-## 2026-07-13 — Frontend foundation
-
-**Prompt:**
-> Add react-router-dom. Routes: / list, /tickets/new create, /tickets/:id detail. Layout component with nav links.
-
-**Outcome:** Router setup.
+**Outcome:** Search + filter.
 
 ---
 
-**Prompt:**
-> Expand services/api.ts — listTickets with optional status and q params, getTicket, createTicket, updateTicket, updateTicketStatus, getAllowedTransitions, createComment, listUsers. Throw ApiError with backend error message on non-OK.
+**Me:**
+> GET /api/users — list all seeded users for dropdowns. Return id, name, email, role.
+
+**Outcome:** Users endpoint.
+
+---
+
+### Debug — filter crash
+
+**Me:**
+> GET /api/tickets?status=open crashes:
+> `Cannot set property query of #<IncomingMessage> which has only a getter`
+> validate.ts line 25. Express 5.2. Fix to use req.validated only.
+
+**Fix:** Stopped assigning to req.query; updated all controllers.
+
+---
+
+## Day 2 — Manual API test (state machine)
+
+**Me:**
+> Small script to test transitions against localhost:3001 — open to in_progress, invalid open to closed, etc. I'll run seed first.
+
+**Outcome:** `testStateMachine.ts`, documented in testing-notes.
+
+---
+
+## Day 3 — Frontend (one page at a time)
+
+**Me:**
+> Add react-router-dom. Routes: / list, /tickets/new, /tickets/:id. Layout with header nav links.
+
+**Outcome:** Router + Layout.
+
+---
+
+**Me:**
+> api.ts — functions for listTickets, getTicket, createTicket, updateTicket, updateTicketStatus, getAllowedTransitions, createComment, listUsers. Throw ApiError with backend message on failure.
 
 **Outcome:** API client.
 
 ---
 
-**Prompt:**
-> Duplicate TicketResponse and enums in frontend/src/types — match backend api.ts shapes. Don't add a shared package, keep simple for now.
+**Me:**
+> TicketListPage — table columns title, status, priority, assignee, updated. Link title to detail. Loading state.
 
-**Outcome:** Frontend types.
-
----
-
-## 2026-07-13 — Ticket list page
-
-**Prompt:**
-> TicketListPage — table with title status priority assignee updated date. Link title to detail. Loading spinner while fetching.
-
-**Outcome:** Basic list UI.
+**Outcome:** List page.
 
 ---
 
-**Prompt:**
-> Add status dropdown filter — All, Open, In Progress, etc. When changed, refetch with ?status=.
+**Me:**
+> Add status dropdown on list — refetch with ?status= when changed.
 
-**Outcome:** Status filter.
-
----
-
-**Prompt:**
-> Search input with debounce ~300ms, calls API with ?q=. Keep status filter when searching.
-
-**Outcome:** `useDebounce` hook + search.
+**Outcome:** Status filter UI.
 
 ---
 
-**Prompt:**
-> Empty state when no tickets — different message when filters active vs truly empty list.
+**Me:**
+> Search box with 300ms debounce, pass ?q= to API. Keep status filter when searching.
 
-**Outcome:** `EmptyState` component.
-
----
-
-## 2026-07-13 — Create ticket page
-
-**Prompt:**
-> CreateTicketPage form: title, description, priority select, assignee select from listUsers(), createdBy select defaulting to john@example.com if exists.
-
-**Outcome:** Create form.
+**Outcome:** Search UI.
 
 ---
 
-**Prompt:**
-> On 400 validation error from backend show error banner and field-level messages from details array.
+**Me:**
+> CreateTicketPage — form fields title, description, priority, assignee, createdBy. Load users for dropdowns. Show validation errors from API details array. Redirect to detail on success.
 
-**Outcome:** Validation error display.
-
----
-
-**Prompt:**
-> After successful create redirect to /tickets/:id using navigate().
-
-**Outcome:** Redirect on success.
+**Outcome:** Create page.
 
 ---
 
-## 2026-07-13 — Ticket detail page (multiple sessions)
+**Me:**
+> TicketDetailPage read-only first — show all fields, comments list, 404 state.
 
-**Prompt:**
-> TicketDetailPage — fetch ticket by id, show title description status priority assignee createdBy dates. Back link to list. 404 friendly message if ticket not found.
-
-**Outcome:** Read-only detail view.
+**Outcome:** Detail view.
 
 ---
 
-**Prompt:**
-> Edit mode toggle — form for title description priority assignee. Save calls PATCH /api/tickets/:id. Cancel resets form. Show success banner on save.
+**Me:**
+> Add edit mode on detail — save calls PATCH /tickets/:id. Cancel resets. Success banner.
 
-**Outcome:** Edit functionality.
-
----
-
-**Prompt:**
-> Status section — fetch allowed-transitions on load. Render a button per allowed status only. On click PATCH /status. If 400 show error banner with backend message, don't update UI optimistically.
-
-**Outcome:** State machine UI.
+**Outcome:** Edit feature.
 
 ---
 
-**Prompt:**
-> Comments section — list existing comments with author and formatted date. Form to add comment with author dropdown (default jane@example.com). POST then refetch ticket.
+**Me:**
+> Status section: call allowed-transitions API, show button per allowed status. On 400 show error banner, don't update badge until success.
+
+**Outcome:** Status UI wired to state machine.
+
+---
+
+**Me:**
+> Comments — list from ticket, form to add comment, POST then refetch ticket.
 
 **Outcome:** Comments UI.
 
 ---
 
-**Prompt:**
-> StatusBadge component — color per status. formatLabel helper for in_progress → "In Progress".
+**Me:**
+> Shared UI components — ErrorBanner for API errors, EmptyState for no tickets/no comments, LoadingSpinner, StatusBadge with color per status. Keep styling simple in App.css.
 
-**Outcome:** Shared UI components.
-
----
-
-## 2026-07-13 — Frontend build fix
-
-**Prompt:**
-> frontend npm run build fails:
-> `'FormEvent' is a type and must be imported using a type-only import`
-> verbatimModuleSyntax is on. Fix CreateTicketPage and TicketDetailPage only.
-
-**Outcome:** `import { type FormEvent } from 'react'`.
+**Outcome:** `components/` folder + error/empty/loading polish.
 
 ---
 
-**Prompt:**
-> CORS error in browser — frontend on 5173 can't reach 3001. Backend already has cors package. What env var am I missing?
+### Debug — frontend build
 
-**Outcome:** Set `CORS_ORIGIN=http://localhost:5173` in backend .env.
+**Me:**
+> npm run build error: FormEvent must be type-only import. CreateTicketPage and TicketDetailPage.
+
+**Fix:** `import { type FormEvent } from 'react'`.
 
 ---
 
-## 2026-07-15 — E2E & README
+**Me:**
+> Browser CORS error calling API. Backend has cors — what env var?
 
-**Prompt:**
-> smokeTest.ts script — create ticket via API, verify in list, get detail, patch title, status open→in_progress, add comment, verify comment on detail. For CI-style check with server running.
+**Fix:** CORS_ORIGIN=http://localhost:5173 in backend .env.
+
+---
+
+**Me:**
+> Duplicate TicketResponse types in frontend/src/types — match backend enums and api shapes. No shared package for Core.
+
+**Outcome:** Frontend types module.
+
+---
+
+## Day 4 — Testing and polish
+
+**Me:**
+> Extract express app to app.ts for supertest. index.ts only starts server.
+
+**Outcome:** Testable app export.
+
+---
+
+**Me:**
+> Jest + supertest + mongodb-memory-server. Integration tests: each valid transition, each invalid transition with exact error message, create validation, search filter.
+
+**Outcome:** 16 tests.
+
+---
+
+**Me:**
+> 13 pass 3 fail — third suite can't start memory server in 10s. Probably starting 3 servers. Fix setup only.
+
+**Fix:** globalSetup / globalTeardown.
+
+---
+
+**Me:**
+> Jest hangs after pass — open handles. disconnect mongoose in afterAll? forceExit ok?
+
+**Fix:** Both.
+
+---
+
+**Me:**
+> backend npm run build fails because tsc compiles test files and errors on beforeAll. Exclude src/tests from production tsconfig.
+
+**Fix:** `"exclude": ["src/tests"]` in tsconfig.json.
+
+---
+
+**Me:**
+> smokeTest.ts — API flow create list detail edit status comment. For manual regression with server running.
 
 **Outcome:** Smoke script.
 
 ---
 
-**Prompt:**
-> README still has TODO placeholders for prerequisites and test commands. Fill in Node 20+, MongoDB Atlas steps, npm test, npm run seed. Windows copy commands too.
+**Me:**
+> grep repo for secrets — .env.example has real atlas hostname. replace with placeholder.
 
-**Outcome:** Complete README.
-
----
-
-**Prompt:**
-> Run through acceptance criteria AC-1 to AC-14 — anything we're missing before I call Core done?
-
-**Outcome:** Gap list — mostly docs not code.
+**Fix:** localhost URI in example file. Also added `.env` to `frontend/.gitignore`.
 
 ---
 
-## 2026-07-15 — Security review
+**Me:**
+> Run self code review against spec and acceptance criteria. Document in code-review-notes.md — what's good, what's tech debt, what we fixed.
 
-**Prompt:**
-> Review backend/.env.example — is it safe to commit? grep for mongodb+srv with real usernames in the repo.
-
-**Outcome:** Found real Atlas username in example file.
-
-**Changed:** Replaced with localhost placeholder. Added .env to frontend/.gitignore.
+**Outcome:** Code review doc + `review-fixes.md`.
 
 ---
 
-**Prompt:**
-> code-review-notes.md — document findings from self-review. What would you flag in a PR for this ticket app?
+**Me:**
+> README — complete prerequisites, run instructions, npm test, troubleshooting table for Atlas and CORS.
 
-**Outcome:** Code review doc.
-
----
-
-## 2026-07-15 — Jest integration tests
-
-**Prompt:**
-> Set up Jest + Supertest in backend. Extract express app to app.ts so index.ts only starts server. Don't connect to Atlas in tests.
-
-**Outcome:** `app.ts` split.
+**Outcome:** Full README.
 
 ---
 
-**Prompt:**
-> Use mongodb-memory-server for test database. beforeEach clear all collections. syncIndexes on connect.
+## Day 5 — Submission docs
 
-**Outcome:** First test setup attempt.
+**Me:**
+> Compare our folder layout to the exercise submission structure. We're missing api-contract.md, data-model.md, ui-flow.md at root, and database/setup-notes.md. Create them from our spec without duplicating everything.
 
----
-
-**Prompt:**
-> statusTransitions.test.ts — supertest PATCH /api/tickets/:id/status. Test all 5 valid transitions each as separate it() block. Create fresh ticket per test.
-
-**Outcome:** Valid transition tests.
+**Outcome:** Root structure aligned — see REPOSITORY_STRUCTURE.md.
 
 ---
 
-**Prompt:**
-> Add invalid cases: open→closed, open→resolved, resolved→in_progress, closed→open, cancelled→open. Expect 400 and exact error string.
-
-**Outcome:** Invalid transition tests.
-
----
-
-**Prompt:**
-> tickets.create.test.ts — missing title 400, missing description 400, valid body 201.
-
-**Outcome:** Create validation tests.
-
----
-
-**Prompt:**
-> search/filter test — seed tickets with known titles, query ?q=password and ?status=closed. Need helper to create test user and tickets in tests/helpers.ts.
-
-**Outcome:** Search filter tests.
-
----
-
-**Prompt:**
-> 13 passed 3 failed — third test file can't start MongoMemoryServer within 10000ms. I think each test file spawns its own server. Fix test infra only.
-
-**Outcome:** globalSetup.ts + globalTeardown.ts single memory server.
-
----
-
-**Prompt:**
-> jest still won't exit after tests pass — open handles from mongoose. afterAll disconnect? or forceExit acceptable for this project?
-
-**Outcome:** disconnect in afterAll + `jest --runInBand --forceExit`.
-
----
-
-**Prompt:**
-> tsconfig build now includes test files and fails on beforeAll. exclude tests from production tsc build.
-
-**Outcome:** `"exclude": ["src/tests"]` in tsconfig.
-
----
-
-## 2026-07-16 — Submission docs
-
-**Prompt:**
-> Compare our repo against the full participant guide checklist. Be honest — what's missing for submission?
-
-**Outcome:** Identified reflection, debugging notes, prompt history depth.
-
----
-
-**Prompt:**
-> debugging-notes.md — document Atlas SRV issue, wrong db name, Express 5 req.query, jest memory server timeout, secrets in env example. Format: problem, investigation, fix.
+**Me:**
+> debugging-notes.md — one section per bug: atlas srv, wrong db name, express query, jest memory server, env example secrets.
 
 **Outcome:** Debugging doc.
 
 ---
 
-**Prompt:**
-> reflection.md — honest writeup: what AI helped with, what it got wrong, how I validated. Mention I switched Prisma to Mongo mid-project.
+**Me:**
+> reflection.md and pr-description.md for submission. Honest about AI mistakes.
 
-**Outcome:** Reflection.
-
----
-
-**Prompt:**
-> design.md with architecture diagram, why state machine is in service layer, why status has separate endpoint.
-
-**Outcome:** Design notes.
+**Outcome:** Lifecycle artifacts.
 
 ---
 
-**Prompt:**
-> PR_DESCRIPTION.md for submission — summary, features, test plan, known limitations.
+**Me:**
+> Mark all Core acceptance criteria as verified in acceptance-criteria.md. candidate-info.md with my name, stack, repo link.
 
-**Outcome:** PR doc.
-
----
-
-**Prompt:**
-> candidate-info.md with my name, stack, repo, setup summary.
-
-**Outcome:** Candidate info.
+**Outcome:** Submission metadata files.
 
 ---
 
-**Prompt:**
-> acceptance-criteria.md — mark all Core AC checkboxes verified.
+## Coverage checklist
 
-**Outcome:** All [x].
+Use this to confirm prompt history matches everything built.
+
+### Planning & requirements
+- [x] Entities (User, Ticket, Comment)
+- [x] State machine (5 transitions)
+- [x] Core features vs out of scope
+- [x] Acceptance criteria (Given/When/Then)
+- [x] project-context, spec, implementation plan
+- [x] tool-workflow.md (Part A)
+- [x] cursor-rules
+- [x] Git init + remote
+
+### Backend development
+- [x] Health check + CORS
+- [x] Mongoose models + indexes
+- [x] Seed + verify:db + verify:persistence
+- [x] AppError + errorHandler
+- [x] Zod validation + req.validated
+- [x] asyncHandler + mappers
+- [x] GET list / GET detail / POST create / PATCH update
+- [x] PATCH status + state machine + allowed-transitions
+- [x] POST comments + GET users
+- [x] Search ?q= + filter ?status= combined
+
+### Frontend development
+- [x] Router + Layout + API client + types
+- [x] Ticket list + status filter + debounced search
+- [x] Create ticket + validation errors
+- [x] Detail view + 404
+- [x] Edit mode + success feedback
+- [x] Status buttons (allowed transitions only)
+- [x] Comments list + add form
+- [x] ErrorBanner, EmptyState, LoadingSpinner, StatusBadge
+
+### Debugging (all issues in debugging-notes.md)
+- [x] Git not on PATH
+- [x] Atlas querySrv ECONNREFUSED
+- [x] Wrong database name (test vs support_tickets)
+- [x] Express 5 req.query read-only
+- [x] ObjectId validation on create
+- [x] FormEvent type-only import
+- [x] CORS env var
+- [x] Secrets in .env.example
+- [x] frontend .gitignore .env
+- [x] Jest Memory Server timeout
+- [x] Jest hang / open handles
+- [x] tsconfig excluding tests from build
+
+### Testing
+- [x] testStateMachine.ts (manual API)
+- [x] smokeTest.ts (E2E API)
+- [x] Jest integration (16 tests)
+- [x] testing-notes.md documentation
+
+### Documentation & submission
+- [x] code-review-notes + review-fixes
+- [x] debugging-notes, reflection, pr-description
+- [x] api-contract, data-model, ui-flow at root
+- [x] REPOSITORY_STRUCTURE alignment
+- [x] candidate-info + AC checkboxes
 
 ---
 
-## Things I rejected or fixed without asking again
-
-| AI output | What I did |
-|-----------|------------|
-| Status on generic PATCH schema | Removed from Zod schema |
-| "Reopen" transition on closed tickets | Not in spec — ignored |
-| Real MongoDB URI in `.env.example` | Replaced with placeholder |
-| Generate entire Phase 4 in one shot | Asked endpoint-by-endpoint instead |
-| Prisma after MongoDB switch | Deleted Prisma references |
-| Optimistic UI status update | Wait for API success only |
+| Anti-pattern | Why avoided |
+|--------------|-------------|
+| Paste entire participant guide into chat | Used repo docs as persistent context instead |
+| "Build entire backend in one prompt" | One endpoint per session |
+| "Build all UI pages at once" | List → create → detail → edit → status → comments separately |
+| Paste real .env credentials | Only error messages and redacted URIs in prompts |
 
 ---
 
-## Session stats (approximate)
+## Approximate session count
 
-| Metric | Count |
-|--------|-------|
-| Cursor sessions logged | ~55+ |
-| Distinct bugs debugged with AI | 8 |
-| API endpoints implemented | 9 |
-| Frontend pages | 3 |
-| Integration tests | 16 |
+| Area | Sessions |
+|------|----------|
+| Requirements & planning | 11 |
+| Backend APIs & foundation | 18 |
+| Database & seed | 8 |
+| Debugging | 12 |
+| Frontend | 14 |
+| Tests | 9 |
+| Documentation & review | 9 |
+| **Total** | **~81** |
 
 ---
 
-*Grouped prompts also in [`ai-prompts/`](../ai-prompts/). This file is the chronological source of truth.*
+*Grouped by activity: [`ai-prompts/`](../ai-prompts/) · Structure: [`REPOSITORY_STRUCTURE.md`](../REPOSITORY_STRUCTURE.md)*

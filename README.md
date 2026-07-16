@@ -260,22 +260,27 @@ npm run lint
 
 | Document | Description |
 |----------|-------------|
-| [Implementation Plan](./IMPLEMENTATION_PLAN.md) | Step-by-step build guide |
-| [Requirements Analysis](./docs/requirements-analysis.md) | Business requirements |
+| [Repository Structure](./REPOSITORY_STRUCTURE.md) | Submission layout (exercise template) |
+| [Implementation Plan](./implementation-plan.md) | Step-by-step build guide |
+| [Requirements Analysis](./requirements-analysis.md) | Business requirements |
+| [API Contract](./api-contract.md) | REST endpoint reference |
+| [Data Model](./data-model.md) | Mongoose schemas |
+| [UI Flow](./ui-flow.md) | Pages and user flows |
 | [Testing Notes](./docs/testing-notes.md) | Manual and automated test results |
-| [Test Results](./docs/test-results.md) | Summary of latest test runs |
-| [Test Strategy](./docs/test-strategy.md) | What is and isn't tested |
-| [Debugging Notes](./docs/debugging-notes.md) | Bugs hit and fixes |
-| [Code Review Notes](./docs/code-review-notes.md) | Self-review findings |
-| [Design Notes](./docs/design.md) | Architecture and key decisions |
-| [Reflection](./docs/reflection.md) | AI workflow reflection |
-| [PR Description](./docs/PR_DESCRIPTION.md) | Submission PR summary |
+| [Test Results](./test-results.md) | Latest test run summary |
+| [Test Strategy](./test-strategy.md) | What is and isn't tested |
+| [Debugging Notes](./debugging-notes.md) | Bugs hit and fixes |
+| [Code Review Notes](./code-review-notes.md) | Self-review findings |
+| [Design Notes](./design-notes.md) | Architecture and key decisions |
+| [Reflection](./reflection.md) | AI workflow reflection |
+| [PR Description](./pr-description.md) | Submission PR summary |
 | [Candidate Info](./candidate-info.md) | Submission metadata |
 | [Prompt History](./prompts/prompt-history.md) | AI prompt log |
 | [Tool Workflow](./tool-workflow.md) | AI workflow (Part A) |
 | [Project Context](./tool-specific/cursor-workflow/project-context.md) | Cursor persistent context |
-| [Spec](./tool-specific/cursor-workflow/spec.md) | API and UI specification |
+| [Spec](./tool-specific/cursor-workflow/spec.md) | Full API and UI specification |
 | [Tasks](./tool-specific/cursor-workflow/tasks.md) | Progress tracker |
+| [Database Setup](./database/setup-notes.md) | MongoDB setup and seed |
 
 ---
 
